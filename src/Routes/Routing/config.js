@@ -3,6 +3,5 @@ export const routes = [
   {
     path: "/home",
     component: Home,
-    exact: true,
   },
 ];
