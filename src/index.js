@@ -1,12 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
+import { PerformanceMonitor } from "./utils";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <PerformanceMonitor>
+      <App />
+    </PerformanceMonitor>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -47,7 +47,7 @@ export class DOM {
       };
       return { listenFor };
     };
-    return { component, childrenArray, focus, focusOnFirstChild, addClass, removeClass };
+    return { component, childrenArray, focus, focusOnFirstChild };
   };
 
   /**
