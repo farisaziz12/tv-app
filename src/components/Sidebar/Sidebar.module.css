@@ -2,10 +2,11 @@
   position: fixed;
   height: 100vh;
   width: 5.5vw;
-  background-color: rgb(68, 68, 68);
+  background-color: black;
   overflow: hidden;
   border-right: solid 0.25vw #ffffff;
   transition: 0.2s ease-in-out;
+  z-index: 5;
 }
 
 .sidebar:focus-within {
@@ -38,8 +39,10 @@
 
 .icon {
   position: fixed;
-  height: 2vw;
-  width: auto;
+  height: 1.5vw;
+  width: 1.5vw;
+  background-color: #ffffff;
+  border-radius: 50%;
 }
 
 .sidebar-item-title {
