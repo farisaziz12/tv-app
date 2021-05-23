@@ -1,4 +1,4 @@
-import { prop, propOr } from "ramda";
+import { pathOr, prop, propOr } from "ramda";
 import { DOM } from "./DOM";
 import { logger } from "./logger";
 
@@ -93,8 +93,7 @@ export class FocusManager extends DOM {
     const nextCard = currentGridCards[nextIndex];
 
     if (nextCard) {
-      const rect = nextCard.getBoundingClientRect();
-      if (!this.isInViewport(rect)) {
+      if (!this.isInViewport(nextCard)) {
         this.handleHorizontalScroll(!isRight);
       }
       nextCard.focus();
@@ -115,17 +114,24 @@ export class FocusManager extends DOM {
 
     if (nextGrid) {
       const nextGridCards = nextGrid.children;
-      const nextFocusableCard = nextGridCards[currentCardPosition];
+      let nextGridCardPositionDiff = parseInt(
+        pathOr("0", ["dataset", "positionDiff"], nextGrid)
+      );
+      nextGridCardPositionDiff = isUp ? nextGridCardPositionDiff : 0;
+      const nextFocusableCard =
+        nextGridCards[currentCardPosition + nextGridCardPositionDiff];
 
       const scrollGrid = (element) => {
-        const rect = element.getBoundingClientRect();
-
-        if (!this.isInViewport(rect)) {
+        if (
+          !this.isInViewport(element) ||
+          this.isTouchingElement(this.event.target, this.getComponent("hero").component)
+        ) {
           this.handleVerticalScroll(isUp);
         }
       };
 
-      if (nextFocusableCard) {
+      if (nextFocusableCard && this.isInRightViewport(nextFocusableCard)) {
+        nextGrid.setAttribute("data-position-diff", 0);
         scrollGrid(nextFocusableCard);
         nextFocusableCard.focus();
       } else {
@@ -148,6 +154,7 @@ export class FocusManager extends DOM {
       ? parseInt(propOr(0, 0, marginLeft.match(/-\d.+/g))) // get margin as integer without size units
       : 0;
     const cardWidth = parseInt(width);
+
     this.currentGrid.style.marginLeft = shouldMoveLeft
       ? `${currentMargin + cardWidth}vw`
       : `${currentMargin - cardWidth}vw`;
@@ -184,7 +191,9 @@ export class FocusManager extends DOM {
     if (!currentCardPosition) return;
     for (let index = currentCardPosition; index !== 0; index -= 1) {
       const element = nextGridCards[index];
-      if (element) {
+
+      if (element && this.isInRightViewport(element)) {
+        this.currentGrid.setAttribute("data-position-diff", currentCardPosition - index);
         element.focus();
         return element;
       }
