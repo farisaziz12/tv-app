@@ -2,7 +2,7 @@ import React from "react";
 import { SidebarItem } from "./SidebarItem";
 import styles from "./Sidebar.module.css";
 
-export default function Sidebar() {
+export function Sidebar() {
   return (
     <div className={styles.sidebar}>
       <div data-component="sidebar-items" className={styles["sidebar-items-container"]}>
