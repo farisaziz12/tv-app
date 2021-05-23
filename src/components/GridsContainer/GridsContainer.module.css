@@ -1,0 +1,7 @@
+.grids-container {
+  position: fixed;
+  display: flex;
+  flex-wrap: wrap;
+  left: 6vw;
+  top: 24vw;
+}
