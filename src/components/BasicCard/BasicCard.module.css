@@ -1,0 +1,16 @@
+.basic-card {
+  position: relative;
+  height: 16.020833333333vw;
+  width: 10.375vw;
+  margin-left: 0.520833vw;
+  border-radius: 15px;
+  background-color: gray;
+  object-fit: cover;
+  transition: 0.1s ease;
+}
+
+.basic-card:focus {
+  border: 0.25vw solid white;
+  transform: scale(1.1);
+  outline: none;
+}
