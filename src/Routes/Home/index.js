@@ -8,7 +8,7 @@ export function Home() {
 
   useEffect(() => {
     (async () => {
-      const movies = await getMovies();
+      const movies = await getMovies(5, 5);
 
       if (movies[0]) {
         setMovies(movies);
@@ -16,6 +16,8 @@ export function Home() {
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
+      } else {
+        setIsLoading(false);
       }
     })();
   }, []);
