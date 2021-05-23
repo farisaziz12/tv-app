@@ -1,0 +1,18 @@
+.loader {
+  position: fixed;
+  display: block;
+  height: 10vw;
+  width: 10vw;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  border: 1vw solid rgba(0, 0, 0, 0.4);
+  border-top-color: #fff;
+  animation: spinner2 1000ms linear infinite;
+  left: 47vw;
+  top: 40vh;
+}
+@keyframes spinner2 {
+  to {
+    transform: rotate(360deg);
+  }
+}
