@@ -1,0 +1,37 @@
+.error-container {
+  position: fixed;
+  display: inline-flex;
+  height: 100vh;
+  width: 100vw;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+  background-color: black;
+  font-size: 4vw;
+  z-index: 1;
+}
+
+.error-404 {
+}
+
+.back-button {
+  display: flex;
+  height: 6vw;
+  width: 30vw;
+
+  justify-content: center;
+  line-height: 5.5vw;
+  margin-top: 5vw;
+
+  border: solid 0.15vw white;
+}
+
+.back-button:focus {
+  transform: scale(1.05);
+  font-weight: 500;
+  border: solid 0.25vw white;
+  outline: none;
+}
