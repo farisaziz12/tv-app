@@ -18,20 +18,24 @@ export function Hero() {
 
         setTimeout(() => {
           component.classList.remove(styles.transition);
-        }, 250);
+        }, 300);
       }
     });
     return () => {
       subscription.unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [card]);
+
   return (
-    <div data-component="hero" className={styles["hero"]}>
-      <div className={styles["metadata-container"]}>
-        <div className={styles.title}>{card?.original_title}</div>
-        <div className={styles.description}>{card?.overview}</div>
+    <div className={styles["hero-cover"]}>
+      <div data-component="hero" className={styles["hero"]}>
+        <div className={styles["metadata-container"]}>
+          <div className={styles.title}>{card?.original_title}</div>
+          <div className={styles.description}>{card?.overview}</div>
+        </div>
+        <img src={card?.backdropUrl} alt="" />
       </div>
-      <img src={"https://image.tmdb.org/t/p/w500" + card?.poster_path} alt="" />
     </div>
   );
 }
