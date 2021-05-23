@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Subject } from "rxjs";
 import { auditTime } from "rxjs/operators";
+import { getImages } from "../../API";
 import { FocusManager } from "../../utils";
 import { cardFocusChange$ } from "../Hero";
 import styles from "./BasicCard.module.css";
@@ -8,9 +9,13 @@ import styles from "./BasicCard.module.css";
 export class BasicCard extends Component {
   constructor() {
     super();
-    this.height = 16.889375; //vw
+    this.height = 18; //vw
     this.width = 11; //vw
     this.focusHandler$ = new Subject();
+
+    this.state = {
+      images: {},
+    };
 
     this.focusHandler$.pipe(auditTime(100)).subscribe((event) => {
       const focusManager = new FocusManager(event);
@@ -18,16 +23,26 @@ export class BasicCard extends Component {
     });
   }
 
+  componentDidMount() {
+    (async () => {
+      const images = getImages(this.props);
+      this.setState({ images });
+    })();
+  }
+
   handleFocus = (event) => {
     this.focusHandler$.next(event);
   };
 
   handleHero = () => {
-    cardFocusChange$.next(this.props);
+    setTimeout(() => {
+      cardFocusChange$.next({ ...this.state.images, ...this.props });
+    });
   };
 
   render() {
-    const { poster_path, original_title } = this.props;
+    const { original_title } = this.props;
+    const { posterUrl } = this.state.images;
     return (
       <img
         data-height={this.height}
@@ -40,7 +55,7 @@ export class BasicCard extends Component {
         aria-label={original_title}
         onFocus={this.handleHero}
         alt=""
-        src={"https://image.tmdb.org/t/p/w500" + poster_path}
+        src={posterUrl}
       ></img>
     );
   }
