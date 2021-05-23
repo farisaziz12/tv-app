@@ -4,13 +4,14 @@
   width: 10.375vw;
   margin-left: 0.520833vw;
   border-radius: 15px;
-  background-color: gray;
   object-fit: cover;
   transition: 0.1s ease;
+  border: 0.25vw solid transparent;
 }
 
 .basic-card:focus {
-  border: 0.25vw solid white;
+  border: 0.25vw solid rgb(238, 224, 224);
   transform: scale(1.1);
   outline: none;
+  z-index: 1;
 }
