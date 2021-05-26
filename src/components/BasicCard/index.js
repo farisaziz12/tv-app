@@ -9,15 +9,15 @@ import styles from "./BasicCard.module.css";
 export class BasicCard extends Component {
   constructor() {
     super();
-    this.height = 18; //vw
-    this.width = 11; //vw
+    this.height = 18.5; //vw
+    this.width = 11.5; //vw
     this.focusHandler$ = new Subject();
 
     this.state = {
       images: {},
     };
 
-    this.focusHandler$.pipe(auditTime(100)).subscribe((event) => {
+    this.focusHandler$.pipe(auditTime(200)).subscribe((event) => {
       const focusManager = new FocusManager(event);
       focusManager.handleGridFocusDirection();
     });
@@ -45,6 +45,7 @@ export class BasicCard extends Component {
     const { posterUrl } = this.state.images;
     return (
       <img
+        loading="lazy"
         data-height={this.height}
         data-width={this.width}
         data-component="basic-card"
