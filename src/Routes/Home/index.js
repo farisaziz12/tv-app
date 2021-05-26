@@ -8,14 +8,11 @@ export function Home() {
 
   useEffect(() => {
     (async () => {
-      const movies = await getMovies(5, 5);
+      const movies = await getMovies(30, 30);
 
       if (movies[0]) {
         setMovies(movies);
-
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
+        setIsLoading(false);
       } else {
         setIsLoading(false);
       }
