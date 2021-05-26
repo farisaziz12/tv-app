@@ -3,8 +3,9 @@ import { StatsGraph } from "@helpscout/stats";
 import { urlParams } from "./urlParams";
 
 export function PerformanceMonitor({ children }) {
+  const isDebugMode = urlParams("debug");
+
   useEffect(() => {
-    const isDebugMode = urlParams("debug");
     if (isDebugMode) {
       const graphs = Array.from(document.querySelectorAll("canvas"));
       graphs.forEach((graph) => {
@@ -12,10 +13,9 @@ export function PerformanceMonitor({ children }) {
         graph.style.height = "7vw";
       });
     }
-  }, []);
+  }, [isDebugMode]);
 
   const renderPerformanceGraphs = () => {
-    const isDebugMode = urlParams("debug");
     if (isDebugMode) {
       return <StatsGraph />;
     }
