@@ -13,6 +13,7 @@ export function Hero() {
     const subscription = cardFocusChange$.subscribe((newCard) => {
       if (card !== newCard) {
         setCard(newCard);
+
         const { component } = dom.getComponent("hero");
         component.classList.add(styles.transition);
 
