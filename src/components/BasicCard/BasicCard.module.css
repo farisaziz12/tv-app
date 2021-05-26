@@ -5,8 +5,8 @@
   margin-left: 0.520833vw;
   border-radius: 15px;
   object-fit: cover;
-  transition: 0.1s ease;
   border: 0.25vw solid transparent;
+  transition: 0.1s ease;
 }
 
 .basic-card:focus {
