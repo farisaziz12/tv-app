@@ -40,7 +40,7 @@ export const getImages = (movie) => {
   const devicePerformanceTier = urlParams("perf");
 
   const getSize = (sizes) => {
-    if (devicePerformanceTier) {
+    if (sizes[devicePerformanceTier]) {
       return sizes[devicePerformanceTier];
     } else {
       return sizes.high;
@@ -60,6 +60,7 @@ export const getImages = (movie) => {
     mid: "w342",
     high: "w780",
   };
+
   const { backdrop_path, poster_path } = movie;
   const backdropUrl =
     "https://image.tmdb.org/t/p/" +
