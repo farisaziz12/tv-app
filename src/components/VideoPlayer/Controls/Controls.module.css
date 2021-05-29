@@ -85,3 +85,8 @@
   margin: -0.25vw 2vw 0 0;
   right: 0;
 }
+
+.seek-button {
+  font-size: 3vw;
+  outline: none;
+}
