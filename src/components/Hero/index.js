@@ -32,8 +32,8 @@ export function Hero() {
     <div className={styles["hero-cover"]}>
       <div data-component="hero" className={styles["hero"]}>
         <div className={styles["metadata-container"]}>
-          <div className={styles.title}>{card?.original_title}</div>
-          <div className={styles.description}>{card?.overview}</div>
+          <div className={styles.title}>{card?.title}</div>
+          <div className={styles.description}>{card?.description}</div>
         </div>
         <img src={card?.backdropUrl} alt="" />
       </div>
