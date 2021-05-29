@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FocusManager } from "../../../utils";
 import styles from "../Sidebar.module.css";
 
@@ -8,18 +9,14 @@ export function SidebarItem({ children, text, href }) {
     focusManager.handleSidebarFocusDirection();
   };
   return (
-    <a
+    <Link
       data-component="sidebar-item"
       onKeyDown={handleKeyDown}
       className={styles["sidebar-item"]}
-      href={href}
+      to={(location) => href + location.search}
     >
-      <img
-        src="https://cdn4.iconfinder.com/data/icons/pictype-free-vector-icons/16/home-512.png"
-        alt=""
-        className={styles.icon}
-      />
+      <span className={styles.icon}></span>
       <div className={styles["sidebar-item-title"]}>{children || text}</div>
-    </a>
+    </Link>
   );
 }

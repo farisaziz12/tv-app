@@ -10,13 +10,13 @@ export class DOM {
 
     /** @return {Array} */
     const childrenArray = () => {
-      if (!component) return;
+      if (!component) return [];
       return Array.from(component.children);
     };
 
     const focusOnFirstChild = () => {
       const children = childrenArray();
-      children[0] && children[0].focus();
+      if (children[0]) children[0].focus();
     };
 
     /**
@@ -97,13 +97,38 @@ export class DOM {
    * @param {Object} rect
    * @returns {Boolean}
    */
-  isInViewport = (rect) => {
+  isInViewport = (element) => {
+    const rect = element.getBoundingClientRect();
     return (
       rect.top >= 0 &&
       rect.left >= 0 &&
       rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
+  };
+
+  isInRightViewport = (element) => {
+    const rightRect = element.getBoundingClientRect().right;
+    return rightRect <= (window.innerWidth || document.documentElement.clientWidth);
+  };
+
+  isTouchingElement = (currentElement, targetElement) => {
+    const currentElementDistanceFromTop =
+      currentElement.offsetTop + currentElement.height;
+    const currentElementDistanceFromLeft =
+      currentElement.offsetLeft + currentElement.width;
+
+    const targetElementDistanceFromTop = targetElement.offsetTop + targetElement.height;
+    const targetElementDistanceFromLeft = currentElement.offsetLeft + targetElement.width;
+
+    const notColliding =
+      currentElementDistanceFromTop < targetElement.offsetTop ||
+      currentElement.offsetTop > targetElementDistanceFromTop ||
+      currentElementDistanceFromLeft < currentElement.offsetLeft ||
+      currentElement.offsetLeft > targetElementDistanceFromLeft;
+
+    // Return whether it Is colliding
+    return !notColliding;
   };
 
   /**
@@ -119,6 +144,23 @@ export class DOM {
     } else {
       return parent;
     }
+  };
+
+  getDistanceBetweenElements = (elementOne, elementTwo) => {
+    const elementOneRect = elementOne.getBoundingClientRect();
+    const elementTwoRect = elementOne.getBoundingClientRect();
+    // get element 1 center point
+    const elementOneX = elementOneRect.left + elementOneRect.width / 2;
+    const elementOneY = elementOneRect.top + elementOneRect.height / 2;
+    // get element 2 center point
+    const elementTwoX = elementTwoRect.left + elementTwoRect.width / 2;
+    const elementTwoY = elementTwoRect.top + elementTwoRect.height / 2;
+
+    const distanceSquared =
+      Math.pow(elementOneX - elementTwoX, 2) + Math.pow(elementOneY - elementTwoY, 2);
+    const distance = Math.sqrt(distanceSquared);
+
+    return distance;
   };
 
   /**

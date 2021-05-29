@@ -93,9 +93,11 @@ export class FocusManager extends DOM {
     const nextCard = currentGridCards[nextIndex];
 
     if (nextCard) {
-      const rect = nextCard.getBoundingClientRect();
-      if (!this.isInViewport(rect)) {
-        this.handleHorizontalScroll(!isRight);
+      if (!this.isInViewport(nextCard)) {
+        const card = this.currentGridCards[0];
+
+        this.currentGrid.removeChild(card);
+        this.currentGrid.appendChild(card);
       }
       nextCard.focus();
     } else {
@@ -118,14 +120,15 @@ export class FocusManager extends DOM {
       const nextFocusableCard = nextGridCards[currentCardPosition];
 
       const scrollGrid = (element) => {
-        const rect = element.getBoundingClientRect();
-
-        if (!this.isInViewport(rect)) {
+        if (
+          !this.isInViewport(element) ||
+          this.isTouchingElement(this.event.target, this.getComponent("hero").component)
+        ) {
           this.handleVerticalScroll(isUp);
         }
       };
 
-      if (nextFocusableCard) {
+      if (nextFocusableCard && this.isInRightViewport(nextFocusableCard)) {
         scrollGrid(nextFocusableCard);
         nextFocusableCard.focus();
       } else {
@@ -145,9 +148,10 @@ export class FocusManager extends DOM {
     const { width } = this.event.target.dataset;
     const { marginLeft } = this.currentGrid.style;
     const currentMargin = marginLeft
-      ? parseInt(propOr(0, 0, marginLeft.match(/-\d.+/g))) // get margin as integer without size units
+      ? parseFloat(propOr(0, 0, marginLeft.match(/-\d.+/g))) // get margin as integer without size units
       : 0;
-    const cardWidth = parseInt(width);
+    const cardWidth = parseFloat(width);
+
     this.currentGrid.style.marginLeft = shouldMoveLeft
       ? `${currentMargin + cardWidth}vw`
       : `${currentMargin - cardWidth}vw`;
@@ -163,9 +167,10 @@ export class FocusManager extends DOM {
     const gridContainer = currentGrid.parentElement;
     const { marginTop } = gridContainer.style;
     const currentMargin = marginTop
-      ? parseInt(propOr(0, 0, marginTop.match(/-\d.+/g))) // get margin as integer without size units
+      ? parseFloat(propOr(0, 0, marginTop.match(/-\d.+/g))) // get margin as integer without size units
       : 0;
-    const cardHeight = parseInt(height);
+
+    const cardHeight = parseFloat(height);
     gridContainer.style.marginTop = shouldMoveUp
       ? `${currentMargin + cardHeight}vw`
       : `${currentMargin - cardHeight}vw`;
@@ -184,7 +189,8 @@ export class FocusManager extends DOM {
     if (!currentCardPosition) return;
     for (let index = currentCardPosition; index !== 0; index -= 1) {
       const element = nextGridCards[index];
-      if (element) {
+
+      if (element && this.isInRightViewport(element)) {
         element.focus();
         return element;
       }

@@ -3,5 +3,6 @@
   display: flex;
   flex-wrap: wrap;
   left: 6vw;
-  top: 24vw;
+  top: 25.75vw;
+  transition: 0.2s ease-in-out;
 }

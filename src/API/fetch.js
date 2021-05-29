@@ -1,5 +1,9 @@
 export const get = async (url) => {
-  const resp = await fetch(url).catch((error) => console.error(error));
+  try {
+    const resp = await fetch(url).catch((error) => console.error(error));
 
-  return resp.json();
+    return resp.json();
+  } catch (error) {
+    console.error(error);
+  }
 };

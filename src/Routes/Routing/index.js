@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Sidebar } from "../../components";
 import { routes } from "./config";
 
 export function RoutingManager({ NotFoundComponent }) {
@@ -15,6 +16,7 @@ export function RoutingManager({ NotFoundComponent }) {
   return (
     <div>
       <Router>
+        <Sidebar /> {/* render for all paths*/}
         <Switch>
           {renderRoutes()}
           <NotFoundComponent />
