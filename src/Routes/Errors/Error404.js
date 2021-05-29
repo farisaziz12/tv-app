@@ -16,7 +16,7 @@ export function Error404() {
 
   return (
     <div className={styles["error-container"]}>
-      <div className={styles["error-404"]}>Error 404: Page Not Found</div>
+      <div className={styles["error-text"]}>Error 404: Page Not Found</div>
       <div data-component="back-button" tabIndex="-1" className={styles["back-button"]}>
         Back
       </div>
