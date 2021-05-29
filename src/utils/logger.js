@@ -1,9 +1,9 @@
 import { urlParams } from "./urlParams";
 
-export const logger = (text) => {
+export const logger = (...args) => {
   const isDebugMode = urlParams("debug");
-  const log = () => isDebugMode && console.log(text);
-  const warn = () => isDebugMode && console.warn(text);
-  const error = () => isDebugMode && console.error(text);
+  const log = () => isDebugMode && console.log(...args);
+  const warn = () => isDebugMode && console.warn(...args);
+  const error = () => isDebugMode && console.error(...args);
   return { log, warn, error };
 };
