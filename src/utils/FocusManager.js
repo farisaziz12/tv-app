@@ -110,14 +110,14 @@ export class FocusManager extends DOM {
    * @param {Boolean} isUp
    */
   handleVerticalFocus = (isUp) => {
-    const { containerGrids, currentGridPosition, currentCardPosition } = this;
+    const { containerGrids, currentGridPosition } = this;
 
     const nextIndex = isUp ? currentGridPosition - 1 : currentGridPosition + 1;
     const nextGrid = currentGridPosition === -1 ? undefined : containerGrids[nextIndex];
 
     if (nextGrid) {
       const nextGridCards = nextGrid.children;
-      const nextFocusableCard = nextGridCards[currentCardPosition];
+      const nextFocusableCard = nextGridCards[0];
 
       const scrollGrid = (element) => {
         if (
