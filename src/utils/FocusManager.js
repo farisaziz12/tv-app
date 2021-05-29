@@ -203,4 +203,20 @@ export class FocusManager extends DOM {
       lastCard = this.event.target;
     }
   };
+
+  playerControlFocus = () => {
+    const direction = this.event.key;
+    const controls = this.getComponent("controls-container").childrenArray();
+    const currentPosition = this.getElementPosition(
+      controls,
+      this.event.target.parentElement
+    );
+    if (direction === "ArrowRight") {
+      const nextControl = controls[currentPosition + 1].firstElementChild;
+      if (nextControl) nextControl.focus();
+    } else if (direction === "ArrowLeft") {
+      const nextControl = controls[currentPosition - 1].firstElementChild;
+      if (nextControl) nextControl.focus();
+    }
+  };
 }
