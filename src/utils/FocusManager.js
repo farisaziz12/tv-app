@@ -110,14 +110,14 @@ export class FocusManager extends DOM {
    * @param {Boolean} isUp
    */
   handleVerticalFocus = (isUp) => {
-    const { containerGrids, currentGridPosition, currentCardPosition } = this;
+    const { containerGrids, currentGridPosition } = this;
 
     const nextIndex = isUp ? currentGridPosition - 1 : currentGridPosition + 1;
     const nextGrid = currentGridPosition === -1 ? undefined : containerGrids[nextIndex];
 
     if (nextGrid) {
       const nextGridCards = nextGrid.children;
-      const nextFocusableCard = nextGridCards[currentCardPosition];
+      const nextFocusableCard = nextGridCards[0];
 
       const scrollGrid = (element) => {
         if (
@@ -201,6 +201,22 @@ export class FocusManager extends DOM {
     if (this.currentCardPosition === 0) {
       this.getComponent("sidebar-items").focusOnFirstChild();
       lastCard = this.event.target;
+    }
+  };
+
+  playerControlFocus = () => {
+    const direction = this.event.key;
+    const controls = this.getComponent("controls-container").childrenArray();
+    const currentPosition = this.getElementPosition(
+      controls,
+      this.event.target.parentElement
+    );
+    if (direction === "ArrowRight") {
+      const nextControl = controls[currentPosition + 1].firstElementChild;
+      if (nextControl) nextControl.focus();
+    } else if (direction === "ArrowLeft") {
+      const nextControl = controls[currentPosition - 1].firstElementChild;
+      if (nextControl) nextControl.focus();
     }
   };
 }

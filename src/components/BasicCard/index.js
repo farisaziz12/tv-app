@@ -1,21 +1,18 @@
 import React, { Component } from "react";
 import { Subject } from "rxjs";
 import { auditTime } from "rxjs/operators";
-import { getImages } from "../../API";
 import { FocusManager } from "../../utils";
 import { cardFocusChange$ } from "../Hero";
+import { PlayerEvent } from "../GridsContainer";
 import styles from "./BasicCard.module.css";
 
 export class BasicCard extends Component {
+  static contextType = PlayerEvent;
   constructor() {
     super();
     this.height = 18.5; //vw
     this.width = 11.5; //vw
     this.focusHandler$ = new Subject();
-
-    this.state = {
-      images: {},
-    };
 
     this.focusHandler$.pipe(auditTime(200)).subscribe((event) => {
       const focusManager = new FocusManager(event);
@@ -23,26 +20,21 @@ export class BasicCard extends Component {
     });
   }
 
-  componentDidMount() {
-    (async () => {
-      const images = getImages(this.props);
-      this.setState({ images });
-    })();
-  }
-
   handleFocus = (event) => {
-    this.focusHandler$.next(event);
+    if (event.key === "Enter") {
+      this.context(); // player event
+    } else {
+      this.focusHandler$.next(event);
+    }
   };
 
   handleHero = () => {
-    setTimeout(() => {
-      cardFocusChange$.next({ ...this.state.images, ...this.props });
-    });
+    cardFocusChange$.next({ ...this.props });
   };
 
   render() {
-    const { original_title } = this.props;
-    const { posterUrl } = this.state.images;
+    const { title, posterUrl } = this.props;
+
     return (
       <img
         loading="lazy"
@@ -53,7 +45,7 @@ export class BasicCard extends Component {
         tabIndex="-1"
         className={styles["basic-card"]}
         onKeyDown={this.handleFocus}
-        aria-label={original_title}
+        aria-label={title}
         onFocus={this.handleHero}
         alt=""
         src={posterUrl}

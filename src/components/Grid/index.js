@@ -2,11 +2,6 @@ import React, { Component } from "react";
 import styles from "./Grid.module.css";
 
 export class Grid extends Component {
-  constructor() {
-    super();
-    this.height = "";
-  }
-
   render() {
     const { children } = this.props;
     return (

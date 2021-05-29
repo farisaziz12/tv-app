@@ -9,6 +9,13 @@ const apiKey = () => {
   return `?api_key=${APIKey}`;
 };
 
+const TMDBAdapter = (movie) => {
+  const { title, overview: description, id, release_date: releaseDate } = movie;
+  let images = getImages(movie);
+  images = images ? images : {};
+  return { ...images, title, description, id, releaseDate };
+};
+
 export const getMovies = async (groups = 2, pages = 1) => {
   let results;
   const fetchMovies = (page) =>
@@ -17,12 +24,13 @@ export const getMovies = async (groups = 2, pages = 1) => {
     );
   if (pages === 1) {
     const movies = await fetchMovies(1);
-    results = propOr([], "results", movies);
+    results = propOr([], "results", movies).map(TMDBAdapter);
   } else {
     const moviesArr = [];
     for (let index = 1; index <= pages; index += 1) {
       const movies = await fetchMovies(index);
-      const movieResults = propOr([], "results", movies);
+      let movieResults = propOr([], "results", movies);
+      movieResults = movieResults.map(TMDBAdapter);
       moviesArr.push(...movieResults);
     }
     results = moviesArr;
