@@ -37,6 +37,9 @@ export function RoutingManager() {
         {renderError()}
         <Sidebar /> {/* render for all paths*/}
         <Switch>
+          <Route exact path="/">
+            <Redirect push to={{ pathname: "/home", search: window.location.search }} />
+          </Route>
           {renderRoutes()}
           <Error404 />
         </Switch>
