@@ -1,0 +1,60 @@
+.container {
+  display: inline-flex;
+  flex-wrap: wrap;
+  height: 100vh;
+  width: 100vw;
+  z-index: 50;
+  background-color: black;
+  color: white;
+  justify-content: center;
+}
+
+.header-text {
+  font-size: 4vw;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-top: 5vw;
+}
+
+.description {
+  width: 60vw;
+  font-size: 1.85vw;
+  text-align: center;
+}
+
+.features-header {
+  font-size: 2.5vw;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.list {
+  display: block;
+  width: 100vw;
+  text-align: center;
+  font-size: 1.5vw;
+}
+.list li {
+  margin-top: 1vw;
+}
+
+.explore-button {
+  display: flex;
+  height: 4.5vw;
+  width: 20vw;
+  font-size: 2vw;
+  justify-content: center;
+  align-items: center;
+
+  border: solid 0.4vw white;
+  border-radius: 1vw;
+
+  text-transform: uppercase;
+  margin-bottom: 2vw;
+}
+
+.explore-button:focus {
+  background-color: #1167b1;
+  transform: scale(1.1);
+  outline: none;
+}
