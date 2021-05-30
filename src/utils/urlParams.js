@@ -7,6 +7,8 @@ export const urlParams = (param) => {
       return params.debug === "true";
     case "perf":
       return params.perf;
+    case "demo":
+      return params.demo === "true";
 
     default:
       break;
