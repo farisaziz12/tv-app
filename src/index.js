@@ -1,18 +1,23 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { of } from "rxjs";
 import App from "./App";
-import { PerformanceMonitor } from "./utils";
+import { PerformanceMonitor, bootstrapNetworkChecker } from "./utils";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <PerformanceMonitor>
-      <App />
-    </PerformanceMonitor>
-  </React.StrictMode>,
-  document.getElementById("root")
-);
+of({})
+  .pipe(bootstrapNetworkChecker)
+  .subscribe(() => {
+    ReactDOM.render(
+      <React.StrictMode>
+        <PerformanceMonitor>
+          <App />
+        </PerformanceMonitor>
+      </React.StrictMode>,
+      document.getElementById("root")
+    );
+  });
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
