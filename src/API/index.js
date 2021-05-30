@@ -9,28 +9,49 @@ const apiKey = () => {
   return `?api_key=${APIKey}`;
 };
 
-const TMDBAdapter = (movie) => {
-  const { title, overview: description, id, release_date: releaseDate } = movie;
+const TMDBAdapter = (movie, genresArr) => {
+  const {
+    title,
+    overview: description,
+    id,
+    release_date: releaseDate,
+    genre_ids,
+  } = movie;
+
+  const genres = genresArr
+    .filter((genre) => genre_ids.includes(genre.id))
+    .map((genre) => genre.name)
+    .slice(0, 3);
+
   let images = getImages(movie);
   images = images ? images : {};
-  return { ...images, title, description, id, releaseDate };
+
+  return { ...images, title, description, id, releaseDate, genres };
+};
+
+const fetchMovies = (page) => {
+  return get(
+    `${baseURL}discover/movie${apiKey()}&language=en-US&sort_by=popularity.desc&include_adult=true&include_video=true&page=${page}&with_watch_monetization_types=free`
+  );
+};
+
+const fetchGenres = () => {
+  return get(`${baseURL}genre/movie/list${apiKey()}&language=en-US`, "genres");
 };
 
 export const getMovies = async (groups = 2, pages = 1) => {
   let results;
-  const fetchMovies = (page) =>
-    get(
-      `${baseURL}discover/movie${apiKey()}&language=en-US&sort_by=popularity.desc&include_adult=true&include_video=true&page=${page}&with_genres=28&with_watch_monetization_types=free`
-    );
+  const genres = await fetchGenres();
+
   if (pages === 1) {
     const movies = await fetchMovies(1);
-    results = propOr([], "results", movies).map(TMDBAdapter);
+    results = propOr([], "results", movies).map((movie) => TMDBAdapter(movie, genres));
   } else {
     const moviesArr = [];
     for (let index = 1; index <= pages; index += 1) {
       const movies = await fetchMovies(index);
       let movieResults = propOr([], "results", movies);
-      movieResults = movieResults.map(TMDBAdapter);
+      movieResults = movieResults.map((movie) => TMDBAdapter(movie, genres));
       moviesArr.push(...movieResults);
     }
     results = moviesArr;
