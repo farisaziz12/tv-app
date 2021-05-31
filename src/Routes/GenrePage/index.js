@@ -1,8 +1,9 @@
 import React from "react";
+import { pathOr } from "ramda";
 import BaseContentRoute from "../BaseContentRoute";
 import { GridsContainer, Hero, Loader } from "../../components";
 import { getMovies } from "../../API";
-import { pathOr } from "ramda";
+import { notFound$ } from "../Routing";
 
 export class GenrePage extends BaseContentRoute {
   constructor() {
@@ -25,6 +26,7 @@ export class GenrePage extends BaseContentRoute {
         this.setState({ movies, isLoading: false });
       } else {
         this.setState({ isLoading: false });
+        notFound$.next(true);
       }
     })();
   }
