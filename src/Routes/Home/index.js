@@ -15,7 +15,7 @@ export class Home extends BaseContentRoute {
 
   componentDidMount() {
     (async () => {
-      const movies = await getMovies(30, 30);
+      const movies = await getMovies(20, 30);
 
       if (movies[0]) {
         this.setState({ movies, isLoading: false });
