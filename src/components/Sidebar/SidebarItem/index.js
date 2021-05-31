@@ -13,7 +13,12 @@ export function SidebarItem({ children, text, href }) {
       data-component="sidebar-item"
       onKeyDown={handleKeyDown}
       className={styles["sidebar-item"]}
-      to={(location) => href + location.search}
+      to={(location) => {
+        const path = href + location.search;
+        return {
+          pathname: path,
+        };
+      }}
     >
       <span className={styles.icon}></span>
       <div className={styles["sidebar-item-title"]}>{children || text}</div>
