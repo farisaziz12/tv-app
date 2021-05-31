@@ -1,6 +1,7 @@
 import { Home } from "../Home";
 import { GenrePage } from "../GenrePage";
 import { Error404, NetworkError } from "../Errors";
+
 export const routes = [
   {
     path: "/home",
