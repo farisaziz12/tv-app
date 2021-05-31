@@ -33,7 +33,7 @@ export class Home extends BaseContentRoute {
       return (
         <div>
           <Hero />
-          <GridsContainer grids={movies} playVideo={this.handlePlayer} />
+          <GridsContainer grids={movies} />
           {this.renderVideoPlayer()}
         </div>
       );
