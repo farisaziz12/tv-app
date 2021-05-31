@@ -1,5 +1,6 @@
 export { Grid } from "./Grid";
 export { BasicCard } from "./BasicCard";
+export { DisplayCard } from "./DisplayCard";
 export { GridsContainer } from "./GridsContainer";
 export { Hero } from "./Hero";
 export { Loader } from "./Loader";
