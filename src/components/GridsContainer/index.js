@@ -1,27 +1,32 @@
 import React, { useEffect } from "react";
-import { BasicCard } from "../BasicCard";
-import { DisplayCard } from "../DisplayCard";
+import { path } from "ramda";
 import { Grid } from "../Grid";
 import { FocusManager, resolveComponent } from "../../utils";
+import { useHistory } from "react-router";
 import styles from "./GridsContainer.module.css";
 
-export const dispatchPlayEvent = () => {
-  const playEvent = new CustomEvent("play-video");
-  document.dispatchEvent(playEvent);
-};
+export function GridsContainer({ grids }) {
+  const history = useHistory();
 
-export function GridsContainer({ grids, playVideo }) {
   useEffect(() => {
     const focusManager = new FocusManager();
     focusManager.initialGridFocus();
   }, []);
 
+  const navigateToShowPage = (event) => {
+    const id = path(["detail", "id"], event);
+
+    if (id) {
+      history.push(`/show/${id}` + window.location.search);
+    }
+  };
+
   useEffect(() => {
-    document.addEventListener("play-video", playVideo);
+    document.addEventListener("show-page", navigateToShowPage);
     return () => {
-      document.removeEventListener("play-video", playVideo);
+      document.removeEventListener("show-page", navigateToShowPage);
     };
-  }, [playVideo]);
+  }, []);
 
   return (
     <div data-component="grids-container" className={styles["grids-container"]}>
