@@ -10,19 +10,16 @@ export class BasicCard extends Card {
   }
 
   renderCard = () => {
-    const { title, posterUrl } = this.props;
-
+    const { title, posterUrl, id } = this.props;
     return (
       <img
-        loading="lazy"
+        data-id={id}
         data-height={this.height}
         data-width={this.width}
-        data-component="card"
-        tabIndex="-1"
+        loading="lazy"
+        {...this.focusManagerProps}
         className={styles["basic-card"]}
-        onKeyDown={this.handleFocus}
         aria-label={title}
-        onFocus={this.handleHero}
         alt=""
         src={posterUrl}
       ></img>
