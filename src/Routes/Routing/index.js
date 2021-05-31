@@ -20,7 +20,7 @@ export function RoutingManager() {
       <Route
         path={route.path}
         key={index}
-        render={(props) => <route.component {...props} />}
+        render={(props) => <route.component key={Math.random()} {...props} />} // random key forces page reload
       />
     ));
   };
