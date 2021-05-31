@@ -63,7 +63,7 @@ const DemoModal = ({ children }) => {
 
 export const bootstrapDemoMode = (app) => {
   const isDemoMode = urlParams("demo");
-  const hasSeenDemoModal = localStorage.getItem("seen_demo_modal");
+  const hasSeenDemoModal = localStorage?.getItem("seen_demo_modal");
 
   if (isDemoMode && !hasSeenDemoModal) {
     localStorage.setItem("seen_demo_modal", true);
