@@ -42,7 +42,7 @@ const TMDBShowAdapter = (movie, cast) => {
 
   let images = getImages(movie);
   images = images ? images : {};
-  const genres = genresArr.map((genre) => genre.name);
+  const genres = genresArr ? genresArr.map((genre) => genre.name) : [];
 
   return { ...images, title, description, id, releaseDate, tagline, runtime, genres };
 };
