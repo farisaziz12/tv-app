@@ -9,7 +9,7 @@ const apiKey = () => {
   return `?api_key=${APIKey}`;
 };
 
-const TMDBAdapter = (movie, genresArr) => {
+const TMDBAdapter = (movie, genresArr = []) => {
   const {
     title,
     overview: description,
@@ -27,6 +27,24 @@ const TMDBAdapter = (movie, genresArr) => {
   images = images ? images : {};
 
   return { ...images, title, description, id, releaseDate, genres };
+};
+
+const TMDBShowAdapter = (movie, cast) => {
+  const {
+    title,
+    overview: description,
+    id,
+    release_date: releaseDate,
+    tagline,
+    runtime,
+    genres: genresArr,
+  } = movie;
+
+  let images = getImages(movie);
+  images = images ? images : {};
+  const genres = genresArr.map((genre) => genre.name);
+
+  return { ...images, title, description, id, releaseDate, tagline, runtime, genres };
 };
 
 const fetchMovies = async (page, genreId = "") => {
@@ -68,6 +86,13 @@ export const getMovies = async (groups = 2, pages = 1, genre) => {
   }
 
   return results[0] ? createGroups(results, groups) : [];
+};
+
+export const getMovie = async (id) => {
+  const movie = await get(`${baseURL}movie/${id + apiKey()}&language=en-US`);
+  const cast = await get(`${baseURL}movie/${id}/credits${apiKey()}&language=en-US`);
+
+  return TMDBShowAdapter(movie, cast);
 };
 
 export const getConfigurations = async () => {
