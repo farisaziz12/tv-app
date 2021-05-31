@@ -204,19 +204,17 @@ export class FocusManager extends DOM {
   };
 
   focusOnSidebar = () => {
-    if (this.currentCardPosition === 0) {
-      const sidebarItems = this.getComponent("sidebar-items").childrenArray();
-      const currentPath = window.location.pathname;
-      const currentItem = sidebarItems.find((item) => item.pathname === currentPath);
+    const sidebarItems = this.getComponent("sidebar-items").childrenArray();
+    const currentPath = window.location.pathname;
+    const currentItem = sidebarItems.find((item) => item.pathname === currentPath);
 
-      if (currentItem) {
-        currentItem.focus();
-      } else {
-        sidebarItems[0].focus();
-      }
-
-      lastCard = { gridPosition: this.currentGridPosition };
+    if (currentItem) {
+      currentItem.focus();
+    } else {
+      sidebarItems[0].focus();
     }
+
+    lastCard = { gridPosition: this.currentGridPosition };
   };
 
   playerControlFocus = () => {
