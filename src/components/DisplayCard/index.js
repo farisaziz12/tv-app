@@ -1,9 +1,9 @@
-import { prop } from "ramda";
+import { path, prop } from "ramda";
 import React, { Component } from "react";
 import { Subject } from "rxjs";
 import { auditTime } from "rxjs/operators";
 import { FocusManager } from "../../utils";
-import { dispatchPlayEvent } from "../GridsContainer";
+import { dispatchPlayEvent, dispatchShowPageEvent } from "../../Events";
 import { cardFocusChange$ } from "../Hero";
 import styles from "./DisplayCard.module.css";
 
@@ -25,7 +25,8 @@ export class DisplayCard extends Component {
 
   handleFocus = (event) => {
     if (event.key === "Enter") {
-      dispatchPlayEvent();
+      const id = path(["target", "dataset", "id"], event);
+      dispatchShowPageEvent(id);
     } else {
       this.focusHandler$.next(event);
     }
@@ -49,11 +50,12 @@ export class DisplayCard extends Component {
   };
 
   render() {
-    const { title, backdropUrl } = this.props;
+    const { title, backdropUrl, id } = this.props;
     return (
       <div
         className={styles["display-card-container"]}
         data-component="card"
+        data-id={id}
         tabIndex="-1"
         data-height={this.height}
         data-width={this.width}
