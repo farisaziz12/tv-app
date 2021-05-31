@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { pathOr } from "ramda";
 import { useHistory } from "react-router";
-import { offlineCheck$ } from "../../utils";
+import { offlineCheck$ } from "../../BootstrapFunctions";
 import styles from "./Error.module.css";
 
 export function NetworkError() {

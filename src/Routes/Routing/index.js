@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 import { Sidebar } from "../../components";
 import { Error404 } from "../Errors";
-import { offlineCheck$ } from "../../utils/bootstrapNetworkChecker";
+import { offlineCheck$ } from "../../BootstrapFunctions";
 import { routes } from "./config";
 
 export function RoutingManager() {

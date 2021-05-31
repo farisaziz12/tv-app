@@ -1,20 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { of } from "rxjs";
+import { take, map } from "rxjs/operators";
 import App from "./App";
-import { PerformanceMonitor, bootstrapNetworkChecker } from "./utils";
+import {
+  bootstrapPerformanceMonitor,
+  bootstrapNetworkChecker,
+  bootstrapDemoMode,
+} from "./BootstrapFunctions";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 
-of({})
+of(<App />)
+  .pipe(take(1))
+  .pipe(map(bootstrapPerformanceMonitor))
+  .pipe(map(bootstrapDemoMode))
   .pipe(bootstrapNetworkChecker)
-  .subscribe(() => {
+  .subscribe((app) => {
     ReactDOM.render(
-      <React.StrictMode>
-        <PerformanceMonitor>
-          <App />
-        </PerformanceMonitor>
-      </React.StrictMode>,
+      <React.StrictMode>{app}</React.StrictMode>,
       document.getElementById("root")
     );
   });

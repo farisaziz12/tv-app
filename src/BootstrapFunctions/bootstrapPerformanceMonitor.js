@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { StatsGraph } from "@helpscout/stats";
-import { urlParams } from "./urlParams";
+import { urlParams } from "../utils/urlParams";
 
-export function PerformanceMonitor({ children }) {
+function PerformanceMonitor({ children }) {
   const isDebugMode = urlParams("debug");
 
   useEffect(() => {
@@ -28,3 +28,7 @@ export function PerformanceMonitor({ children }) {
     </div>
   );
 }
+
+export const bootstrapPerformanceMonitor = (app) => {
+  return <PerformanceMonitor>{app}</PerformanceMonitor>;
+};
