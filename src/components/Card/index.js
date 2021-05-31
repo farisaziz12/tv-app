@@ -3,7 +3,8 @@ import { Subject } from "rxjs";
 import { auditTime } from "rxjs/operators";
 import { FocusManager } from "../../utils";
 import { cardFocusChange$ } from "../Hero";
-import { dispatchPlayEvent } from "../GridsContainer";
+import { dispatchShowPageEvent } from "../../Events";
+import { path } from "ramda";
 
 export class Card extends Component {
   constructor(props) {
@@ -18,13 +19,21 @@ export class Card extends Component {
       focusManager.handleGridFocusDirection();
     });
 
+    this.focusManagerProps = {
+      "data-component": "card",
+      tabIndex: "-1",
+      onKeyDown: this.handleFocus,
+      onFocus: this.handleHero,
+    };
+
     this.handleFocus.bind(this);
     this.handleHero.bind(this);
   }
 
   handleFocus = (event) => {
     if (event.key === "Enter") {
-      dispatchPlayEvent(); // player event
+      const id = path(["target", "dataset", "id"], event);
+      dispatchShowPageEvent(id);
     } else {
       this.focusHandler$.next(event);
     }
