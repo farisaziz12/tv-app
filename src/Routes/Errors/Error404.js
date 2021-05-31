@@ -1,14 +1,22 @@
+import { pathOr } from "ramda";
 import React, { useEffect } from "react";
 import { useHistory } from "react-router";
 import { FocusManager } from "../../utils";
 import styles from "./Error.module.css";
 
-export function Error404() {
+export function Error404({ location }) {
   const history = useHistory();
   useEffect(() => {
+    const isFailure = pathOr(false, ["state", "failure"], location);
     const focusManager = new FocusManager();
     const component = focusManager.getComponent("back-button").focus();
-    const removeListener = component.listenFor(["Enter"], history.goBack);
+    const removeListener = component.listenFor(["Enter"], () => {
+      if (isFailure) {
+        history.go(-2);
+      } else {
+        history.goBack();
+      }
+    });
     return () => {
       removeListener();
     };
