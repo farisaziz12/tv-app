@@ -1,5 +1,6 @@
 import { Home } from "../Home";
 import { GenrePage } from "../GenrePage";
+import { Show } from "../Show";
 import { Error404, NetworkError } from "../Errors";
 
 export const routes = [
@@ -10,6 +11,10 @@ export const routes = [
   {
     path: "/genre-page/:genre",
     component: GenrePage,
+  },
+  {
+    path: "/show/:id",
+    component: Show,
   },
   {
     path: "/not-found",
