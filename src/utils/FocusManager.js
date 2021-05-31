@@ -128,7 +128,7 @@ export class FocusManager extends DOM {
           !this.isInViewport(element) ||
           this.isTouchingElement(this.event.target, this.getComponent("hero").component)
         ) {
-          this.handleVerticalScroll(isUp);
+          this.handleVerticalScroll(isUp, element);
         }
       };
 
@@ -165,9 +165,11 @@ export class FocusManager extends DOM {
    * Adjusts margins for element vertical position
    * @param {Boolean} shouldMoveUp
    */
-  handleVerticalScroll = (shouldMoveUp) => {
+  handleVerticalScroll = (shouldMoveUp, nextElement) => {
     const { currentGrid } = this;
-    const { height } = this.event.target.dataset;
+    const height = shouldMoveUp
+      ? nextElement.dataset.height
+      : this.event.target.dataset.height;
     const gridContainer = currentGrid.parentElement;
     const { marginTop } = gridContainer.style;
     const currentMargin = marginTop
