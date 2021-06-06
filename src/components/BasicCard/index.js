@@ -11,6 +11,7 @@ export class BasicCard extends Card {
 
   renderCard = () => {
     const { title, posterUrl, id } = this.props;
+    const { shouldMount } = this.state;
     return (
       <img
         data-id={id}
@@ -21,7 +22,8 @@ export class BasicCard extends Card {
         className={styles["basic-card"]}
         aria-label={title}
         alt=""
-        src={posterUrl}
+        src={shouldMount ? posterUrl : ""}
+        ref={this.ref}
       ></img>
     );
   };
