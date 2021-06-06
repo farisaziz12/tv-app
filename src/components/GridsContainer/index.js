@@ -1,17 +1,44 @@
 import React, { useEffect } from "react";
-import { path } from "ramda";
+import { Subject } from "rxjs";
+import { auditTime } from "rxjs/operators";
+import { isEmpty, path, propOr } from "ramda";
 import { Grid } from "../Grid";
-import { FocusManager, resolveComponent } from "../../utils";
+import { FocusManager, keyHandler, logger, resolveComponent } from "../../utils";
 import { useHistory } from "react-router";
 import styles from "./GridsContainer.module.css";
 
-export function GridsContainer({ grids }) {
+export const focusHandler$ = new Subject();
+
+focusHandler$.pipe(auditTime(200)).subscribe((event) => {
+  const focusManager = new FocusManager(event);
+  focusManager.handleGridFocusDirection();
+});
+
+export function GridsContainer({ grids, position = {}, noTarget = {} }) {
   const history = useHistory();
 
   useEffect(() => {
     const focusManager = new FocusManager();
     focusManager.initialGridFocus();
   }, []);
+
+  useEffect(() => {
+    document.addEventListener("show-page", navigateToShowPage);
+    document.addEventListener("no-nav-target", noTargetFunc);
+    return () => {
+      document.removeEventListener("show-page", navigateToShowPage);
+      document.removeEventListener("no-nav-target", noTargetFunc);
+    };
+  }, []);
+
+  const noTargetFunc = (event) => {
+    const syntheticEvent = propOr({}, "detail", event);
+    if (isEmpty(noTarget)) {
+      logger("No target").warn();
+    } else {
+      keyHandler(syntheticEvent, noTarget);
+    }
+  };
 
   const navigateToShowPage = (event) => {
     const id = path(["detail", "id"], event);
@@ -20,16 +47,12 @@ export function GridsContainer({ grids }) {
       history.push(`/show/${id}` + window.location.search);
     }
   };
-
-  useEffect(() => {
-    document.addEventListener("show-page", navigateToShowPage);
-    return () => {
-      document.removeEventListener("show-page", navigateToShowPage);
-    };
-  }, []);
-
   return (
-    <div data-component="grids-container" className={styles["grids-container"]}>
+    <div
+      style={position}
+      data-component="grids-container"
+      className={styles["grids-container"]}
+    >
       {grids.map((grid, index) => {
         const children = grid.cards.map((card) => resolveComponent(grid.component, card));
         return <Grid key={index} children={children} />;
