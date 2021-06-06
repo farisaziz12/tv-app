@@ -42,7 +42,7 @@ export class DisplayCard extends Component {
       if (isInRightViewport) {
         this.setState({ shouldMount: true });
       }
-      this.mountListener = document.addEventListener("card-mount", this.handleMount);
+      document.addEventListener("card-mount", this.handleMount);
     }
   }
 
