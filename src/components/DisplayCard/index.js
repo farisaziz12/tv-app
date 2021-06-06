@@ -1,10 +1,9 @@
+import React, { Component, createRef } from "react";
 import { path, prop } from "ramda";
-import React, { Component } from "react";
-import { Subject } from "rxjs";
-import { auditTime } from "rxjs/operators";
-import { FocusManager } from "../../utils";
-import { dispatchPlayEvent, dispatchShowPageEvent } from "../../Events";
+import { focusHandler$ } from "../GridsContainer";
+import { dispatchShowPageEvent } from "../../Events";
 import { cardFocusChange$ } from "../Hero";
+import { DOM, isHighPerfDevice, logger } from "../../utils";
 import styles from "./DisplayCard.module.css";
 
 export class DisplayCard extends Component {
@@ -13,14 +12,44 @@ export class DisplayCard extends Component {
     this.height = 13.5; //vw
     this.width = 18.485; //vw
 
-    this.focusHandler$ = new Subject();
-    this.focusHandler$.pipe(auditTime(200)).subscribe((event) => {
-      const focusManager = new FocusManager(event);
-      focusManager.handleGridFocusDirection();
-    });
+    this.state = { shouldMount: false };
+    this.ref = createRef();
+    this.isHighPerfDevice = isHighPerfDevice();
 
     this.handleFocus.bind(this);
     this.handleHero.bind(this);
+  }
+
+  handleMount = (event) => {
+    const cardToMount = event.detail.cardToMount;
+    const cardToUnmount = event.detail.cardToUnmount;
+    if (this.ref.current === cardToMount) {
+      this.setState({ shouldMount: true });
+      logger({ card: cardToMount }, "mounted").log();
+    }
+    if (this.ref.current === cardToUnmount) {
+      this.setState({ shouldMount: false });
+      logger({ card: cardToUnmount }, "unmounted").log();
+    }
+  };
+
+  componentDidMount() {
+    if (this.isHighPerfDevice) {
+      this.setState({ shouldMount: true });
+    } else {
+      const dom = new DOM();
+      const isInRightViewport = dom.isInRightViewport(this.ref.current, 200);
+      if (isInRightViewport) {
+        this.setState({ shouldMount: true });
+      }
+      this.mountListener = document.addEventListener("card-mount", this.handleMount);
+    }
+  }
+
+  componentWillUnmount() {
+    if (!this.isHighSpecDevice) {
+      document.removeEventListener("card-mount", this.handleMount);
+    }
   }
 
   handleFocus = (event) => {
@@ -28,7 +57,7 @@ export class DisplayCard extends Component {
       const id = path(["target", "dataset", "id"], event);
       dispatchShowPageEvent(id);
     } else {
-      this.focusHandler$.next(event);
+      focusHandler$.next(event);
     }
   };
   handleHero = () => {
@@ -51,6 +80,7 @@ export class DisplayCard extends Component {
 
   render() {
     const { title, backdropUrl, id } = this.props;
+    const { shouldMount } = this.state;
     return (
       <div
         className={styles["display-card-container"]}
@@ -62,9 +92,10 @@ export class DisplayCard extends Component {
         onKeyDown={this.handleFocus}
         aria-label={title}
         onFocus={this.handleHero}
+        ref={this.ref}
       >
         <div
-          style={{ backgroundImage: `url(${backdropUrl})` }}
+          style={{ backgroundImage: `url(${shouldMount ? backdropUrl : ""})` }}
           className={styles["display-card"]}
         ></div>
         {this.renderTitle()}
