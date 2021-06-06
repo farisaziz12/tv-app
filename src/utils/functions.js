@@ -37,5 +37,9 @@ export const formatTime = (seconds) => {
 
 export const isHighPerfDevice = () => {
   const performanceTier = urlParams(TYPES.PERFORMANCE);
-  return performanceTier === TYPES.HIGH_TIER || performanceTier === TYPES.MID_TIER;
+  return (
+    performanceTier === TYPES.HIGH_TIER ||
+    performanceTier === TYPES.MID_TIER ||
+    performanceTier === undefined
+  );
 };
