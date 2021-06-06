@@ -1,12 +1,16 @@
 import { prop, propOr } from "ramda";
-import { DOM } from "./DOM";
 import { logger } from "./logger";
+import { DOM } from "./DOM";
+import { dispatchCardMountEvent, dispatchNoTargetEvent } from "../Events";
+import { TYPES } from "../Enums";
 
 let lastCard;
 export class FocusManager extends DOM {
   constructor(event) {
     super();
     this.event = event;
+    this.isLeftKey = event?.key === TYPES.ARROWLEFT;
+    this.isRightKey = event?.key === TYPES.ARROWRIGHT;
     this.containerGrids = this.getComponent("grids-container").childrenArray();
     this.currentGrid = this.getParent(prop("target", event), "grid");
     this.currentGridCards = this.getChildrenArray(this.currentGrid, "card");
@@ -56,12 +60,16 @@ export class FocusManager extends DOM {
     if (focusDirectionHandler) focusDirectionHandler();
   };
 
-  handleFocusLastCard = () => {
+  handleFocusLastElement = () => {
     const gridPosition = propOr(0, "gridPosition", lastCard);
     const grid = this.containerGrids[gridPosition];
     const card = prop(0, this.getChildrenArray(grid));
 
-    if (card) card.focus();
+    if (card) {
+      card.focus();
+    } else {
+      this.getAllFocusableElements().focusOnFirst();
+    }
   };
 
   handleSidebarFocusDirection = () => {
@@ -76,7 +84,7 @@ export class FocusManager extends DOM {
     };
 
     const handlers = {
-      ArrowRight: () => this.handleFocusLastCard(),
+      ArrowRight: () => this.handleFocusLastElement(),
       ArrowUp: () => handleVerticalFocus(true),
       ArrowDown: () => handleVerticalFocus(false),
       Enter: () => {},
@@ -102,10 +110,13 @@ export class FocusManager extends DOM {
 
         this.currentGrid.removeChild(card);
         this.currentGrid.appendChild(card);
+        dispatchCardMountEvent(this.event);
       }
       nextCard.focus();
     } else {
-      this.focusOnSidebar();
+      if (this.isLeftKey) {
+        this.focusOnSidebar();
+      }
     }
   };
 
@@ -114,14 +125,19 @@ export class FocusManager extends DOM {
    * @param {Boolean} isUp
    */
   handleVerticalFocus = (isUp) => {
-    const { containerGrids, currentGridPosition } = this;
+    const { containerGrids, currentGridPosition, currentCardPosition } = this;
 
     const nextIndex = isUp ? currentGridPosition - 1 : currentGridPosition + 1;
     const nextGrid = currentGridPosition === -1 ? undefined : containerGrids[nextIndex];
 
     if (nextGrid) {
       const nextGridCards = nextGrid.children;
-      const nextFocusableCard = nextGridCards[0];
+      const nextFocusableCard = nextGridCards[currentCardPosition];
+      const closestFocusableCard = this.getClosestElementYAxis(
+        this.event.target,
+        nextFocusableCard,
+        nextGrid
+      );
 
       const scrollGrid = (element) => {
         if (
@@ -132,15 +148,16 @@ export class FocusManager extends DOM {
         }
       };
 
-      if (nextFocusableCard && this.isInRightViewport(nextFocusableCard)) {
-        scrollGrid(nextFocusableCard);
-        nextFocusableCard.focus();
+      if (closestFocusableCard && this.isInRightViewport(closestFocusableCard)) {
+        scrollGrid(closestFocusableCard);
+        closestFocusableCard.focus();
       } else {
         const element = this.findNextFocusableCard(nextGridCards);
         if (!element) return;
         scrollGrid(element);
       }
     } else {
+      dispatchNoTargetEvent(this.event.key);
     }
   };
 
@@ -180,6 +197,8 @@ export class FocusManager extends DOM {
     gridContainer.style.marginTop = shouldMoveUp
       ? `${currentMargin + cardHeight}vw`
       : `${currentMargin - cardHeight}vw`;
+
+    logger(`Moved by ${height}vw`).log();
   };
 
   /**
@@ -218,16 +237,15 @@ export class FocusManager extends DOM {
   };
 
   playerControlFocus = () => {
-    const direction = this.event.key;
     const controls = this.getComponent("controls-container").childrenArray();
     const currentPosition = this.getElementPosition(
       controls,
       this.event.target.parentElement
     );
-    if (direction === "ArrowRight") {
+    if (this.isRightKey) {
       const nextControl = controls[currentPosition + 1].firstElementChild;
       if (nextControl) nextControl.focus();
-    } else if (direction === "ArrowLeft") {
+    } else if (this.isLeftKey) {
       const nextControl = controls[currentPosition - 1].firstElementChild;
       if (nextControl) nextControl.focus();
     }
