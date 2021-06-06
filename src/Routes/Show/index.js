@@ -1,6 +1,6 @@
 import { pathOr } from "ramda";
 import { getMovie } from "../../API";
-import { Loader } from "../../components";
+import { GridsContainer, Loader } from "../../components";
 import { dispatchPlayEvent } from "../../Events";
 import { FocusManager, keyHandler } from "../../utils";
 import BaseContentRoute from "../BaseContentRoute";
@@ -20,18 +20,20 @@ export class Show extends BaseContentRoute {
       Enter: dispatchPlayEvent,
       ArrowLeft: this.focusSidebar,
       Backspace: this.goBack,
+      ArrowDown: this.focusGrid,
+      ArrowUp: this.focusButton,
     };
   }
 
   componentDidMount() {
     (async () => {
       const id = pathOr("", ["match", "params", "id"], this.props);
-      const movie = await getMovie(id);
+      const movie = (await getMovie(id)) || {};
+      const { description, title } = movie;
 
-      if (movie.title || movie.description) {
+      if (description || title) {
         this.setState({ movie, isLoading: false });
-        const focusManager = new FocusManager();
-        focusManager.getComponent("watch-now-button").focus();
+        this.focusButton();
       } else {
         this.setState({ isLoading: false });
         notFound$.next(true);
@@ -47,6 +49,16 @@ export class Show extends BaseContentRoute {
   focusSidebar = () => {
     const focusManager = new FocusManager();
     focusManager.focusOnSidebar();
+  };
+
+  focusGrid = () => {
+    const focusManger = new FocusManager();
+    focusManger.initialGridFocus();
+  };
+
+  focusButton = () => {
+    const focusManager = new FocusManager();
+    focusManager.getComponent("watch-now-button").focus();
   };
 
   goBack = () => {
@@ -83,6 +95,7 @@ export class Show extends BaseContentRoute {
       releaseDate = "",
       runtime = "",
     } = this.state.movie;
+
     return (
       <div className={styles["metadata-container"]}>
         <div className={styles["movie-title"]}>{title}</div>
@@ -110,6 +123,39 @@ export class Show extends BaseContentRoute {
     );
   };
 
+  renderCast = () => {
+    const { movie } = this.state;
+    const cast = movie.cast?.map((castMember) => {
+      if (castMember) {
+        const { character, profileImage, name } = castMember;
+        return (
+          <div key={name}>
+            <img className={styles["cast-profile-image"]} alt="" src={profileImage} />
+            <div className={styles["cast-name"]}>{name}</div>
+            <div className={styles["cast-character"]}>"{character}"</div>
+          </div>
+        );
+      }
+    });
+    return <div className={styles["cast-container"]}>{cast}</div>;
+  };
+
+  renderRecommendationGrid = () => {
+    const { recommendations } = this.state.movie;
+    if (recommendations?.cards[0]) {
+      return (
+        <div>
+          <div className={styles["recommendations-text"]}>Recommendations</div>
+          <GridsContainer
+            noTarget={{ ArrowUp: this.focusButton }}
+            position={{ bottom: "0" }}
+            grids={[recommendations]}
+          />
+        </div>
+      );
+    }
+  };
+
   renderShowPage = () => {
     const { isLoading } = this.state;
 
@@ -121,6 +167,8 @@ export class Show extends BaseContentRoute {
           {this.renderMetaData()}
           {this.renderImage()}
           {this.renderVideoPlayer()}
+          {this.renderCast()}
+          {this.renderRecommendationGrid()}
         </div>
       );
     }
