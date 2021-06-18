@@ -4,14 +4,20 @@ import { Sidebar } from "../../components";
 import { Error404 } from "../Errors";
 import { offlineCheck$ } from "../../BootstrapFunctions";
 import { routes } from "./config";
+import { Subject } from "rxjs";
+
+export const notFound$ = new Subject();
 
 export function RoutingManager() {
   const [isOffline, setIsOffline] = useState(false);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
-    const subscription = offlineCheck$.subscribe(setIsOffline);
+    const offlineSubscription = offlineCheck$.subscribe(setIsOffline);
+    const notFoundSubscription = notFound$.subscribe(setIsNotFound);
     return () => {
-      subscription.unsubscribe();
+      offlineSubscription.unsubscribe();
+      notFoundSubscription.unsubscribe();
     };
   }, []);
 
@@ -20,7 +26,7 @@ export function RoutingManager() {
       <Route
         path={route.path}
         key={index}
-        render={(props) => <route.component {...props} />}
+        render={(props) => <route.component key={Math.random()} {...props} />} // random key forces page reload
       />
     ));
   };
@@ -28,6 +34,9 @@ export function RoutingManager() {
   const renderError = () => {
     if (isOffline) {
       return <Redirect push to="/network-error" />;
+    }
+    if (isNotFound) {
+      return <Redirect push to={{ pathname: "/not-found", state: { failure: true } }} />;
     }
   };
 
@@ -37,6 +46,9 @@ export function RoutingManager() {
         {renderError()}
         <Sidebar /> {/* render for all paths*/}
         <Switch>
+          <Route exact path="/">
+            <Redirect push to={{ pathname: "/home", search: window.location.search }} />
+          </Route>
           {renderRoutes()}
           <Error404 />
         </Switch>

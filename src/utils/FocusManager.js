@@ -9,7 +9,7 @@ export class FocusManager extends DOM {
     this.event = event;
     this.containerGrids = this.getComponent("grids-container").childrenArray();
     this.currentGrid = this.getParent(prop("target", event), "grid");
-    this.currentGridCards = this.getChildrenArray(this.currentGrid, "basic-card");
+    this.currentGridCards = this.getChildrenArray(this.currentGrid, "card");
     this.currentGridPosition = this.getElementPosition(
       this.containerGrids,
       this.currentGrid
@@ -56,6 +56,14 @@ export class FocusManager extends DOM {
     if (focusDirectionHandler) focusDirectionHandler();
   };
 
+  handleFocusLastCard = () => {
+    const gridPosition = propOr(0, "gridPosition", lastCard);
+    const grid = this.containerGrids[gridPosition];
+    const card = prop(0, this.getChildrenArray(grid));
+
+    if (card) card.focus();
+  };
+
   handleSidebarFocusDirection = () => {
     const { key } = this.event;
     const sidebarItem = this.event.target;
@@ -67,12 +75,8 @@ export class FocusManager extends DOM {
       if (sidebarItems[nextItemPosition]) sidebarItems[nextItemPosition].focus();
     };
 
-    const handleFocusLastCard = () => {
-      if (lastCard) lastCard.focus();
-    };
-
     const handlers = {
-      ArrowRight: () => handleFocusLastCard(),
+      ArrowRight: () => this.handleFocusLastCard(),
       ArrowUp: () => handleVerticalFocus(true),
       ArrowDown: () => handleVerticalFocus(false),
       Enter: () => {},
@@ -124,7 +128,7 @@ export class FocusManager extends DOM {
           !this.isInViewport(element) ||
           this.isTouchingElement(this.event.target, this.getComponent("hero").component)
         ) {
-          this.handleVerticalScroll(isUp);
+          this.handleVerticalScroll(isUp, element);
         }
       };
 
@@ -161,9 +165,11 @@ export class FocusManager extends DOM {
    * Adjusts margins for element vertical position
    * @param {Boolean} shouldMoveUp
    */
-  handleVerticalScroll = (shouldMoveUp) => {
+  handleVerticalScroll = (shouldMoveUp, nextElement) => {
     const { currentGrid } = this;
-    const { height } = this.event.target.dataset;
+    const height = shouldMoveUp
+      ? nextElement.dataset.height
+      : this.event.target.dataset.height;
     const gridContainer = currentGrid.parentElement;
     const { marginTop } = gridContainer.style;
     const currentMargin = marginTop
@@ -199,8 +205,17 @@ export class FocusManager extends DOM {
 
   focusOnSidebar = () => {
     if (this.currentCardPosition === 0) {
-      this.getComponent("sidebar-items").focusOnFirstChild();
-      lastCard = this.event.target;
+      const sidebarItems = this.getComponent("sidebar-items").childrenArray();
+      const currentPath = window.location.pathname;
+      const currentItem = sidebarItems.find((item) => item.pathname === currentPath);
+
+      if (currentItem) {
+        currentItem.focus();
+      } else {
+        sidebarItems[0].focus();
+      }
+
+      lastCard = { gridPosition: this.currentGridPosition };
     }
   };
 

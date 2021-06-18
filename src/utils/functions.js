@@ -1,8 +1,13 @@
 export const createGroups = (arr, numGroups) => {
   const perGroup = Math.ceil(arr.length / numGroups);
-  return new Array(numGroups).fill("").map((_, i) => {
-    const cards = arr.slice(i * perGroup, (i + 1) * perGroup);
-    return { cards };
+  return new Array(numGroups).fill("").map((_, index) => {
+    const cards = arr.slice(index * perGroup, (index + 1) * perGroup);
+
+    if ((index / 2) % 2 === 0) {
+      return { cards, component: "display" };
+    } else {
+      return { cards, component: "basic" };
+    }
   });
 };
 
