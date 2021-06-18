@@ -10,7 +10,7 @@ export function Sidebar() {
   useEffect(() => {
     const unlisten = history.listen(() => {
       const focusManager = new FocusManager();
-      focusManager.handleFocusLastCard();
+      focusManager.handleFocusLastElement();
     });
 
     return () => {
@@ -22,10 +22,10 @@ export function Sidebar() {
     <div className={styles.sidebar}>
       <div data-component="sidebar-items" className={styles["sidebar-items-container"]}>
         <SidebarItem href="/home">Home</SidebarItem>
-        <SidebarItem href="/genre-page/horror">Horror</SidebarItem>
-        <SidebarItem href="/genre-page/action">Action</SidebarItem>
-        <SidebarItem href="/genre-page/comedy">Comedy</SidebarItem>
-        <SidebarItem href="/genre-page/family">Family</SidebarItem>
+        <SidebarItem href="/genre/horror">Horror</SidebarItem>
+        <SidebarItem href="/genre/action">Action</SidebarItem>
+        <SidebarItem href="/genre/comedy">Comedy</SidebarItem>
+        <SidebarItem href="/genre/family">Family</SidebarItem>
         <SidebarItem href="/homes">Fail</SidebarItem>
       </div>
     </div>

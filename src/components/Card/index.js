@@ -1,9 +1,9 @@
-import { Component } from "react";
-import { Subject } from "rxjs";
-import { auditTime } from "rxjs/operators";
-import { FocusManager } from "../../utils";
+import { Component, createRef } from "react";
+import { path } from "ramda";
+import { focusHandler$ } from "../GridsContainer";
 import { cardFocusChange$ } from "../Hero";
-import { dispatchPlayEvent } from "../GridsContainer";
+import { dispatchShowPageEvent } from "../../Events";
+import { DOM, isHighPerfDevice, logger } from "../../utils";
 
 export class Card extends Component {
   constructor(props) {
@@ -11,22 +11,60 @@ export class Card extends Component {
 
     this.height = 0; //vw
     this.width = 0; //vw
-    this.focusHandler$ = new Subject();
 
-    this.focusHandler$.pipe(auditTime(200)).subscribe((event) => {
-      const focusManager = new FocusManager(event);
-      focusManager.handleGridFocusDirection();
-    });
+    this.focusManagerProps = {
+      "data-component": "card",
+      tabIndex: "-1",
+      onKeyDown: this.handleFocus,
+      onFocus: this.handleHero,
+    };
+
+    this.state = { shouldMount: false };
+    this.ref = createRef();
+    this.isHighPerfDevice = isHighPerfDevice();
 
     this.handleFocus.bind(this);
     this.handleHero.bind(this);
   }
 
+  handleMount = (event) => {
+    const cardToMount = event.detail.cardToMount;
+    const cardToUnmount = event.detail.cardToUnmount;
+    if (this.ref.current === cardToMount) {
+      this.setState({ shouldMount: true });
+      logger({ card: cardToMount }, "mounted").log();
+    }
+    if (this.ref.current === cardToUnmount) {
+      this.setState({ shouldMount: false });
+      logger({ card: cardToUnmount }, "unmounted").log();
+    }
+  };
+
+  componentDidMount() {
+    if (this.isHighPerfDevice) {
+      this.setState({ shouldMount: true });
+    } else {
+      const dom = new DOM();
+      const isInRightViewport = dom.isInRightViewport(this.ref.current, 200);
+      if (isInRightViewport) {
+        this.setState({ shouldMount: true });
+      }
+      document.addEventListener("card-mount", this.handleMount);
+    }
+  }
+
+  componentWillUnmount() {
+    if (!this.isHighPerfDevice) {
+      document.removeEventListener("card-mount", this.handleMount);
+    }
+  }
+
   handleFocus = (event) => {
     if (event.key === "Enter") {
-      dispatchPlayEvent(); // player event
+      const id = path(["target", "dataset", "id"], event);
+      dispatchShowPageEvent(id);
     } else {
-      this.focusHandler$.next(event);
+      focusHandler$.next(event);
     }
   };
 

@@ -1,13 +1,14 @@
 import { parse } from "qs";
+import { TYPES } from "../Types";
 
 export const urlParams = (param) => {
   const params = parse(window.location.search, { ignoreQueryPrefix: true });
   switch (param) {
-    case "debug":
+    case TYPES.DEBUG:
       return params.debug === "true";
-    case "perf":
+    case TYPES.PERFORMANCE:
       return params.perf;
-    case "demo":
+    case TYPES.DEMO:
       return params.demo === "true";
 
     default:

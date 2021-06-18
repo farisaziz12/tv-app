@@ -15,7 +15,7 @@ export class Home extends BaseContentRoute {
 
   componentDidMount() {
     (async () => {
-      const movies = await getMovies(20, 30);
+      const movies = await getMovies(30, 30);
 
       if (movies[0]) {
         this.setState({ movies, isLoading: false });
@@ -33,7 +33,7 @@ export class Home extends BaseContentRoute {
       return (
         <div>
           <Hero />
-          <GridsContainer grids={movies} playVideo={this.handlePlayer} />
+          <GridsContainer position={{ top: "25.75vw" }} grids={movies} />
           {this.renderVideoPlayer()}
         </div>
       );

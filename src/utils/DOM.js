@@ -85,7 +85,7 @@ export class DOM {
    * @param {HTMLElement} element
    * @returns {Integer}
    */
-  getElementPosition = (elementsArray, element = 0) => {
+  getElementPosition = (elementsArray, element) => {
     if (!elementsArray) return;
 
     const position = elementsArray.indexOf(element);
@@ -94,7 +94,7 @@ export class DOM {
 
   /**
    * Check if is in viewport
-   * @param {Object} rect
+   * @param {HTMLElement} element
    * @returns {Boolean}
    */
   isInViewport = (element) => {
@@ -107,11 +107,24 @@ export class DOM {
     );
   };
 
-  isInRightViewport = (element) => {
+  /**
+   * Check if is in the right section of the viewport
+   * @param {HTMLElement} element
+   * @param {Integer} threshold
+   * @returns {Boolean}
+   */
+  isInRightViewport = (element, threshold = 0) => {
     const rightRect = element.getBoundingClientRect().right;
-    return rightRect <= (window.innerWidth || document.documentElement.clientWidth);
+    const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+    return rightRect <= windowWidth + threshold;
   };
 
+  /**
+   * Check if two elements are colliding
+   * @param {HTMLElement} currentElement
+   * @param {HTMLElement} targetElement
+   * @returns {Boolean}
+   */
   isTouchingElement = (currentElement, targetElement) => {
     const currentElementDistanceFromTop =
       currentElement.offsetTop + currentElement.height;
@@ -146,9 +159,15 @@ export class DOM {
     }
   };
 
+  /**
+   * gets the distance between two elements
+   * @param {HTMLElement} elementOne
+   * @param {HTMLElement} elementTwo
+   * @returns {Integer}
+   */
   getDistanceBetweenElements = (elementOne, elementTwo) => {
     const elementOneRect = elementOne.getBoundingClientRect();
-    const elementTwoRect = elementOne.getBoundingClientRect();
+    const elementTwoRect = elementTwo.getBoundingClientRect();
     // get element 1 center point
     const elementOneX = elementOneRect.left + elementOneRect.width / 2;
     const elementOneY = elementOneRect.top + elementOneRect.height / 2;
@@ -173,5 +192,81 @@ export class DOM {
     const elementComponent = path(["dataset", "component"], element);
 
     return elementComponent === component;
+  };
+
+  /**
+   * gets all focusable elements on screen
+   * @returns {Object}
+   */
+  getAllFocusableElements = () => {
+    const elements = Array.from(document.querySelectorAll('[tabindex = "-1"]'));
+    const focusOnFirst = () => {
+      if (elements[0]) elements[0].focus();
+    };
+
+    return { elements, focusOnFirst };
+  };
+
+  /**
+   * returns the closest card in the next grid relative to the current card
+   * @param {HTMLElement} currentElement
+   * @param {HTMLElement} nextElement
+   * @param {HTMLElement} nextContainer
+   * @returns {HTMLElement}
+   */
+  getClosestElementYAxis = (currentElement, nextElement, nextContainer) => {
+    const nextContainerChildren = this.getChildrenArray(nextContainer);
+    const nextElementPosition = this.getElementPosition(
+      nextContainerChildren,
+      nextElement
+    );
+    const currentDistance = this.getDistanceBetweenElements(currentElement, nextElement);
+    const closeDistance = 365;
+
+    const findClosestElement = (shouldSearchRight, currentEl, currentDistance) => {
+      let distance = currentDistance;
+      const currentElementPosition = this.getElementPosition(
+        nextContainerChildren,
+        currentEl
+      );
+      let element;
+      let elementPosition = currentElementPosition;
+
+      while (distance > closeDistance) {
+        const nextPosition = shouldSearchRight
+          ? elementPosition + 1
+          : elementPosition - 1;
+        element = nextContainerChildren[nextPosition];
+        distance = this.getDistanceBetweenElements(currentElement, element);
+        elementPosition = nextPosition;
+
+        if (distance < closeDistance) {
+          if (this.isInRightViewport(element)) {
+            return element;
+          } else {
+            return nextContainerChildren[nextPosition - 1];
+          }
+        }
+      }
+
+      return currentEl;
+    };
+
+    const prevIndexElement = nextContainerChildren[nextElementPosition - 1];
+    const prevIndexElementDistance = prevIndexElement
+      ? this.getDistanceBetweenElements(currentElement, prevIndexElement)
+      : undefined;
+    const nextIndexElement = nextContainerChildren[nextElementPosition + 1];
+    const nextIndexElementDistance = nextIndexElement
+      ? this.getDistanceBetweenElements(currentElement, nextIndexElement)
+      : undefined;
+
+    if (prevIndexElement && prevIndexElementDistance < currentDistance) {
+      return findClosestElement(false, prevIndexElement, prevIndexElementDistance);
+    } else if (nextIndexElement && nextIndexElementDistance < currentDistance) {
+      return findClosestElement(true, nextIndexElement, nextIndexElementDistance);
+    } else {
+      return nextElement;
+    }
   };
 }

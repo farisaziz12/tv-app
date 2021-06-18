@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { TYPES } from "../Types";
 import { urlParams, DOM } from "../utils";
 import styles from "./DemoModal.module.css";
 
@@ -62,7 +63,7 @@ const DemoModal = ({ children }) => {
 };
 
 export const bootstrapDemoMode = (app) => {
-  const isDemoMode = urlParams("demo");
+  const isDemoMode = urlParams(TYPES.DEMO);
   const hasSeenDemoModal = localStorage?.getItem("seen_demo_modal");
 
   if (isDemoMode && !hasSeenDemoModal) {

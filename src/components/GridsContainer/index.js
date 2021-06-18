@@ -1,30 +1,58 @@
 import React, { useEffect } from "react";
-import { BasicCard } from "../BasicCard";
-import { DisplayCard } from "../DisplayCard";
+import { Subject } from "rxjs";
+import { auditTime } from "rxjs/operators";
+import { isEmpty, path, propOr } from "ramda";
 import { Grid } from "../Grid";
-import { FocusManager, resolveComponent } from "../../utils";
+import { FocusManager, keyHandler, logger, resolveComponent } from "../../utils";
+import { useHistory } from "react-router";
 import styles from "./GridsContainer.module.css";
 
-export const dispatchPlayEvent = () => {
-  const playEvent = new CustomEvent("play-video");
-  document.dispatchEvent(playEvent);
-};
+export const focusHandler$ = new Subject();
 
-export function GridsContainer({ grids, playVideo }) {
+focusHandler$.pipe(auditTime(200)).subscribe((event) => {
+  const focusManager = new FocusManager(event);
+  focusManager.handleGridFocusDirection();
+});
+
+export function GridsContainer({ grids, position = {}, noTarget = {} }) {
+  const history = useHistory();
+
   useEffect(() => {
     const focusManager = new FocusManager();
     focusManager.initialGridFocus();
   }, []);
 
   useEffect(() => {
-    document.addEventListener("play-video", playVideo);
+    document.addEventListener("show-page", navigateToShowPage);
+    document.addEventListener("no-nav-target", noTargetFunc);
     return () => {
-      document.removeEventListener("play-video", playVideo);
+      document.removeEventListener("show-page", navigateToShowPage);
+      document.removeEventListener("no-nav-target", noTargetFunc);
     };
-  }, [playVideo]);
+  }, []);
 
+  const noTargetFunc = (event) => {
+    const syntheticEvent = propOr({}, "detail", event);
+    if (isEmpty(noTarget)) {
+      logger("No target").warn();
+    } else {
+      keyHandler(syntheticEvent, noTarget);
+    }
+  };
+
+  const navigateToShowPage = (event) => {
+    const id = path(["detail", "id"], event);
+
+    if (id) {
+      history.push(`/show/${id}` + window.location.search);
+    }
+  };
   return (
-    <div data-component="grids-container" className={styles["grids-container"]}>
+    <div
+      style={position}
+      data-component="grids-container"
+      className={styles["grids-container"]}
+    >
       {grids.map((grid, index) => {
         const children = grid.cards.map((card) => resolveComponent(grid.component, card));
         return <Grid key={index} children={children} />;

@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { StatsGraph } from "@helpscout/stats";
 import { urlParams } from "../utils/urlParams";
+import { TYPES } from "../Types";
 
 function PerformanceMonitor({ children }) {
-  const isDebugMode = urlParams("debug");
+  const isDebugMode = urlParams(TYPES.DEBUG);
 
   useEffect(() => {
     if (isDebugMode) {

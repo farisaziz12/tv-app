@@ -1,12 +1,15 @@
+import { TYPES } from "../Types";
+import { urlParams } from "./urlParams";
+
 export const createGroups = (arr, numGroups) => {
   const perGroup = Math.ceil(arr.length / numGroups);
   return new Array(numGroups).fill("").map((_, index) => {
     const cards = arr.slice(index * perGroup, (index + 1) * perGroup);
 
     if ((index / 2) % 2 === 0) {
-      return { cards, component: "display" };
+      return { cards, component: TYPES.DISPLAY_COMPONENT };
     } else {
-      return { cards, component: "basic" };
+      return { cards, component: TYPES.BASIC_COMPONENT };
     }
   });
 };
@@ -30,4 +33,13 @@ export const formatTime = (seconds) => {
   formattedTime += "" + mins + ":" + (secs < 10 ? "0" : "");
   formattedTime += "" + secs;
   return formattedTime;
+};
+
+export const isHighPerfDevice = () => {
+  const performanceTier = urlParams(TYPES.PERFORMANCE);
+  return (
+    performanceTier === TYPES.HIGH_TIER ||
+    performanceTier === TYPES.MID_TIER ||
+    performanceTier === undefined
+  );
 };

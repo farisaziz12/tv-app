@@ -39,7 +39,7 @@ export class GenrePage extends BaseContentRoute {
       return (
         <div>
           <Hero />
-          <GridsContainer grids={movies} playVideo={this.handlePlayer} />
+          <GridsContainer position={{ top: "25.75vw" }} grids={movies} />
           {this.renderVideoPlayer()}
         </div>
       );

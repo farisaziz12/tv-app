@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { getGenreId } from "../../API";
 import { VideoPlayer } from "../../components";
-import { urlParams } from "../../utils";
 
 export default class BaseContentRoute extends Component {
   constructor() {
@@ -15,9 +13,12 @@ export default class BaseContentRoute extends Component {
     this.handlePlayer.bind(this);
   }
 
-  getGenre = async () => {
-    const genreId = await getGenreId(urlParams("genre"));
-    return genreId;
+  addPlayerEventListener = () => {
+    document.addEventListener("play-video", this.handlePlayer);
+  };
+
+  removePlayerEventListener = () => {
+    document.removeEventListener("play-video", this.handlePlayer);
   };
 
   handlePlayer = () => {

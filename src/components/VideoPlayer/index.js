@@ -85,7 +85,7 @@ export class VideoPlayer extends Component {
   handleExit = () => {
     this.handlePlayer();
     const focusManager = new FocusManager();
-    focusManager.initialGridFocus();
+    focusManager.getComponent("watch-now-button").focus();
   };
 
   handlePlayPause = () => {
