@@ -183,20 +183,20 @@ export class FocusManager extends DOM {
    * @param {Boolean} shouldMoveUp
    */
   handleVerticalScroll = (shouldMoveUp, nextElement) => {
-    const { currentGrid } = this;
     const height = shouldMoveUp
       ? nextElement.dataset.height
       : this.event.target.dataset.height;
-    const gridContainer = currentGrid.parentElement;
-    const { marginTop } = gridContainer.style;
-    const currentMargin = marginTop
-      ? parseFloat(propOr(0, 0, marginTop.match(/-\d.+/g))) // get margin as integer without size units
+    const gridsContainer = this.getComponent("grids-container").component;
+    const { transform } = gridsContainer.style;
+    const currentTranslate = transform
+      ? parseFloat(propOr(0, 0, transform.match(/-\d.+/g))) // get translation distance as integer without units
       : 0;
 
     const cardHeight = parseFloat(height);
-    gridContainer.style.marginTop = shouldMoveUp
-      ? `${currentMargin + cardHeight}vw`
-      : `${currentMargin - cardHeight}vw`;
+
+    gridsContainer.style.transform = shouldMoveUp
+      ? `translateY(${currentTranslate + cardHeight}vw)`
+      : `translateY(${currentTranslate - cardHeight}vw)`;
 
     logger(`Moved by ${height}vw`).log();
   };
