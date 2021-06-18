@@ -76,7 +76,7 @@ const TMDBShowAdapter = (movie, castArr, recommendationsData) => {
 
 const fetchMovies = async (page, genreId = "") => {
   return await get(
-    `${baseURL}discover/movie${apiKey()}&language=en-US&sort_by=popularity.desc&include_adult=true&with_genres=${genreId}&include_video=true&page=${page}&with_watch_monetization_types=free`
+    `${baseURL}discover/movie${apiKey()}&language=en-US&sort_by=popularity.desc&include_adult=false&with_genres=${genreId}&include_video=true&page=${page}&with_watch_monetization_types=free`
   );
 };
 
