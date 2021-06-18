@@ -1,7 +1,7 @@
 import { pathOr, propOr } from "ramda";
 import { get } from "./fetch";
 import { createGroups, urlParams } from "../utils";
-import { TYPES } from "../Enums";
+import { TYPES } from "../Types";
 
 const APIKey = process.env.REACT_APP_MOVIE_API_KEY;
 const baseURL = "https://api.themoviedb.org/3/";

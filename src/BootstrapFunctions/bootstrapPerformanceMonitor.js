@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { StatsGraph } from "@helpscout/stats";
 import { urlParams } from "../utils/urlParams";
-import { TYPES } from "../Enums";
+import { TYPES } from "../Types";
 
 function PerformanceMonitor({ children }) {
   const isDebugMode = urlParams(TYPES.DEBUG);

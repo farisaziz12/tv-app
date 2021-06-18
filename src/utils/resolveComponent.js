@@ -1,5 +1,5 @@
 import { BasicCard, DisplayCard } from "../components";
-import { TYPES } from "../Enums";
+import { TYPES } from "../Types";
 
 export const resolveComponent = (component, props) => {
   switch (component) {

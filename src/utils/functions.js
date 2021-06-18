@@ -1,4 +1,4 @@
-import { TYPES } from "../Enums";
+import { TYPES } from "../Types";
 import { urlParams } from "./urlParams";
 
 export const createGroups = (arr, numGroups) => {

@@ -1,5 +1,5 @@
 import { parse } from "qs";
-import { TYPES } from "../Enums";
+import { TYPES } from "../Types";
 
 export const urlParams = (param) => {
   const params = parse(window.location.search, { ignoreQueryPrefix: true });

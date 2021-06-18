@@ -2,7 +2,7 @@ import { prop, propOr } from "ramda";
 import { logger } from "./logger";
 import { DOM } from "./DOM";
 import { dispatchCardMountEvent, dispatchNoTargetEvent } from "../Events";
-import { TYPES } from "../Enums";
+import { TYPES } from "../Types";
 
 let lastCard;
 export class FocusManager extends DOM {

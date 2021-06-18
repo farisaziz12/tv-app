@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TYPES } from "../Enums";
+import { TYPES } from "../Types";
 import { urlParams, DOM } from "../utils";
 import styles from "./DemoModal.module.css";
 
