@@ -1,0 +1,36 @@
+.key {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 3.25vw;
+  width: 100%;
+
+  max-width: 35vw;
+
+  color: #ffffff;
+  font-size: 2.5vw;
+
+  border: solid 0.2vw rgba(255, 255, 255, 0.602);
+  border-radius: 0.75vw;
+  margin: 0.2vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  transition: 0.1s ease-in-out;
+}
+
+.key:focus {
+  font-weight: bold;
+  border: solid 0.2vw #ffffff;
+  transform: scale(1.05);
+  outline: none;
+}
+
+.key:first-child {
+  margin-left: 0.5vw;
+}
+.key:last-child {
+  margin-right: 0.5vw;
+}
