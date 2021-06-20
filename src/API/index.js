@@ -1,6 +1,6 @@
 import { pathOr, propOr } from "ramda";
 import { get } from "./fetch";
-import { createGroups, urlParams } from "../utils";
+import { createGroups, urlParams, sortSearch } from "../utils";
 import { TYPES } from "../Types";
 
 const APIKey = process.env.REACT_APP_MOVIE_API_KEY;
@@ -50,7 +50,7 @@ const TMDBShowAdapter = (movie, castArr, recommendationsData) => {
         return { name, character, profileImage };
       }
     })
-    .slice(0, 10);
+    .slice(0, 5);
 
   let images = getImages(movie);
   images = images ? images : {};
@@ -72,6 +72,22 @@ const TMDBShowAdapter = (movie, castArr, recommendationsData) => {
     cast,
     recommendations,
   };
+};
+
+export const searchMovies = async (query = "") => {
+  const { results } = await get(
+    `${baseURL}search/movie${apiKey()}&query=${encodeURI(
+      query
+    )}&language=en-US&page=1&include_adult=false`
+  );
+  const genres = await fetchGenres();
+
+  const adaptedMovies = results ? results.map((movie) => TMDBAdapter(movie, genres)) : [];
+
+  const movies = adaptedMovies[0] ? createGroups(adaptedMovies, 2) : [];
+  const autofillSuggestions = sortSearch(adaptedMovies, query).slice(0, 5);
+
+  return { movies, autofillSuggestions };
 };
 
 const fetchMovies = async (page, genreId = "") => {
