@@ -26,7 +26,7 @@ export function Sidebar() {
         <SidebarItem href="/genre/action">Action</SidebarItem>
         <SidebarItem href="/genre/comedy">Comedy</SidebarItem>
         <SidebarItem href="/genre/family">Family</SidebarItem>
-        <SidebarItem href="/homes">Fail</SidebarItem>
+        <SidebarItem href="/search">Search</SidebarItem>
       </div>
     </div>
   );
