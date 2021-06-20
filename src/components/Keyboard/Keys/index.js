@@ -1,0 +1,53 @@
+import { TYPES } from "../../../Types";
+
+export const keys = [
+  [
+    { lowercase: "1", uppercase: "!", action: TYPES.KEY_ACTION },
+    { lowercase: "2", uppercase: "@", action: TYPES.KEY_ACTION },
+    { lowercase: "3", uppercase: "#", action: TYPES.KEY_ACTION },
+    { lowercase: "4", uppercase: "$", action: TYPES.KEY_ACTION },
+    { lowercase: "5", uppercase: "%", action: TYPES.KEY_ACTION },
+    { lowercase: "6", uppercase: "^", action: TYPES.KEY_ACTION },
+    { lowercase: "7", uppercase: "&", action: TYPES.KEY_ACTION },
+    { lowercase: "8", uppercase: "*", action: TYPES.KEY_ACTION },
+    { lowercase: "9", uppercase: "(", action: TYPES.KEY_ACTION },
+    { lowercase: "0", uppercase: ")", action: TYPES.KEY_ACTION },
+  ],
+  [
+    { lowercase: "q", uppercase: "Q", action: TYPES.KEY_ACTION },
+    { lowercase: "w", uppercase: "W", action: TYPES.KEY_ACTION },
+    { lowercase: "e", uppercase: "E", action: TYPES.KEY_ACTION },
+    { lowercase: "r", uppercase: "R", action: TYPES.KEY_ACTION },
+    { lowercase: "t", uppercase: "T", action: TYPES.KEY_ACTION },
+    { lowercase: "y", uppercase: "Y", action: TYPES.KEY_ACTION },
+    { lowercase: "u", uppercase: "U", action: TYPES.KEY_ACTION },
+    { lowercase: "i", uppercase: "I", action: TYPES.KEY_ACTION },
+    { lowercase: "o", uppercase: "O", action: TYPES.KEY_ACTION },
+    { lowercase: "p", uppercase: "P", action: TYPES.KEY_ACTION },
+    { lowercase: "\u2190", uppercase: "\u2190", action: TYPES.DELETE_ACTION }, // left arrow unicode
+  ],
+  [
+    { lowercase: "a", uppercase: "A", action: TYPES.KEY_ACTION },
+    { lowercase: "s", uppercase: "S", action: TYPES.KEY_ACTION },
+    { lowercase: "d", uppercase: "D", action: TYPES.KEY_ACTION },
+    { lowercase: "f", uppercase: "F", action: TYPES.KEY_ACTION },
+    { lowercase: "g", uppercase: "G", action: TYPES.KEY_ACTION },
+    { lowercase: "h", uppercase: "H", action: TYPES.KEY_ACTION },
+    { lowercase: "j", uppercase: "J", action: TYPES.KEY_ACTION },
+    { lowercase: "k", uppercase: "K", action: TYPES.KEY_ACTION },
+    { lowercase: "l", uppercase: "L", action: TYPES.KEY_ACTION },
+    { lowercase: "Enter", uppercase: "Enter", action: TYPES.ENTER_ACTION },
+  ],
+  [
+    { lowercase: "z", uppercase: "Z", action: TYPES.KEY_ACTION },
+    { lowercase: "x", uppercase: "X", action: TYPES.KEY_ACTION },
+    { lowercase: "c", uppercase: "C", action: TYPES.KEY_ACTION },
+    { lowercase: "v", uppercase: "V", action: TYPES.KEY_ACTION },
+    { lowercase: "b", uppercase: "B", action: TYPES.KEY_ACTION },
+    { lowercase: "n", uppercase: "N", action: TYPES.KEY_ACTION },
+    { lowercase: "m", uppercase: "M", action: TYPES.KEY_ACTION },
+    { lowercase: ".", uppercase: ".", action: TYPES.KEY_ACTION },
+    { lowercase: "Shift", uppercase: "Shift", action: TYPES.SHIFT_ACTION },
+  ],
+  [{ lowercase: "Space", uppercase: "Space", action: TYPES.SPACE_ACTION }],
+];
