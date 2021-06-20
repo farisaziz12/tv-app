@@ -43,3 +43,23 @@ export const isHighPerfDevice = () => {
     performanceTier === undefined
   );
 };
+
+const fuzzyMatch = (compareTerm = "", term = "") => {
+  if (term.length === 0) return 1;
+  let string = compareTerm.toLowerCase();
+  let compare = term.toLowerCase();
+  let matches = 0;
+  for (let i = 0; i < compare.length; i++) {
+    string.indexOf(compare[i]) > -1 ? (matches += 1) : (matches -= 1);
+  }
+  return matches / compareTerm.length;
+};
+
+export const sortSearch = (movies = [], query = "") => {
+  const results = movies.map((movie) => [movie, fuzzyMatch(movie.title, query)]);
+  results.sort((a, b) => b[1] - a[1]);
+  const filteredResults = results
+    .filter((result) => result[1] > 0)
+    .map((movie) => movie[0]);
+  return filteredResults;
+};
