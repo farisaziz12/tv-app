@@ -14,12 +14,19 @@ focusHandler$.pipe(auditTime(200)).subscribe((event) => {
   focusManager.handleGridFocusDirection();
 });
 
-export function GridsContainer({ grids, position = {}, noTarget = {} }) {
+export function GridsContainer({
+  grids = [],
+  position = {},
+  noTarget = {},
+  focusOnMount = true,
+}) {
   const history = useHistory();
 
   useEffect(() => {
-    const focusManager = new FocusManager();
-    focusManager.initialGridFocus();
+    if (focusOnMount) {
+      const focusManager = new FocusManager();
+      focusManager.initialGridFocus();
+    }
   }, []);
 
   useEffect(() => {
