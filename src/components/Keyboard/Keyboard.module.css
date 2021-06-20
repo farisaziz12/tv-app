@@ -1,0 +1,26 @@
+.keyboard-container {
+  position: fixed;
+  width: 100vw;
+  height: 45vh;
+
+  background-color: #000000;
+  border-top: 0.2vw solid #ffffff;
+
+  bottom: 0;
+  z-index: 25;
+  animation: fadeIn 0.1s;
+}
+
+.keyboard-container .rows {
+  position: absolute;
+  bottom: 0.5vw;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
