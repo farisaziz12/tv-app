@@ -166,6 +166,7 @@ export class DOM {
    * @returns {Integer}
    */
   getDistanceBetweenElements = (elementOne, elementTwo) => {
+    if (!elementOne || !elementTwo) return;
     const elementOneRect = elementOne.getBoundingClientRect();
     const elementTwoRect = elementTwo.getBoundingClientRect();
     // get element 1 center point
@@ -195,11 +196,26 @@ export class DOM {
   };
 
   /**
+   *
+   * @param {HTMLElement} element
+   * @returns {Object}
+   */
+  getElementProps = (element) => {
+    const parentElement = element.parentElement;
+    const parentElements = this.getChildrenArray(parentElement);
+    const index = parentElements.indexOf(element) || 0;
+
+    return { index, parentElements, element, parentElement };
+  };
+
+  /**
    * gets all focusable elements on screen
    * @returns {Object}
    */
-  getAllFocusableElements = () => {
-    const elements = Array.from(document.querySelectorAll('[tabindex = "-1"]'));
+  getAllFocusableElements = (element) => {
+    const scope = element || document;
+    const elements = Array.from(scope.querySelectorAll('[tabindex = "-1"], input'));
+
     const focusOnFirst = () => {
       if (elements[0]) elements[0].focus();
     };
@@ -212,16 +228,21 @@ export class DOM {
    * @param {HTMLElement} currentElement
    * @param {HTMLElement} nextElement
    * @param {HTMLElement} nextContainer
+   * @param {Integer} threshold
    * @returns {HTMLElement}
    */
-  getClosestElementYAxis = (currentElement, nextElement, nextContainer) => {
+  getClosestElementYAxis = (
+    currentElement,
+    nextElement,
+    nextContainer,
+    threshold = 250
+  ) => {
     const nextContainerChildren = this.getChildrenArray(nextContainer);
     const nextElementPosition = this.getElementPosition(
       nextContainerChildren,
       nextElement
     );
     const currentDistance = this.getDistanceBetweenElements(currentElement, nextElement);
-    const closeDistance = 365;
 
     const findClosestElement = (shouldSearchRight, currentEl, currentDistance) => {
       let distance = currentDistance;
@@ -231,8 +252,7 @@ export class DOM {
       );
       let element;
       let elementPosition = currentElementPosition;
-
-      while (distance > closeDistance) {
+      while (distance > threshold) {
         const nextPosition = shouldSearchRight
           ? elementPosition + 1
           : elementPosition - 1;
@@ -240,7 +260,7 @@ export class DOM {
         distance = this.getDistanceBetweenElements(currentElement, element);
         elementPosition = nextPosition;
 
-        if (distance < closeDistance) {
+        if (distance < threshold) {
           if (this.isInRightViewport(element)) {
             return element;
           } else {
