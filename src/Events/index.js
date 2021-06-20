@@ -28,3 +28,17 @@ export const dispatchNoTargetEvent = (key) => {
   const noTarget = new CustomEvent("no-nav-target", { detail: { key } });
   document.dispatchEvent(noTarget);
 };
+export const dispatchKeyboardNoTargetEvent = (key) => {
+  const noTarget = new CustomEvent("keyboard-no-nav-target", { detail: { key } });
+  document.dispatchEvent(noTarget);
+};
+
+export const dispatchOnChangeEvent = (inputElement, value) => {
+  const event = new Event("input", { bubbles: true });
+  const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype,
+    "value"
+  ).set;
+  nativeInputValueSetter.call(inputElement, value);
+  inputElement.dispatchEvent(event);
+};
