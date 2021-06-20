@@ -121,10 +121,10 @@
 .cast-container {
   position: fixed;
   display: flex;
-  flex-wrap: wrap;
+
   width: 55vw;
   left: 7vw;
-  bottom: 15.75vw;
+  bottom: 18vw;
 
   color: #ffffff;
   text-align: center;
@@ -141,10 +141,12 @@
 
 .cast-name {
   font-weight: bold;
+  font-size: 1vw;
 }
 
 .cast-character {
   font-style: italic;
+  font-size: 1vw;
   margin-bottom: 0.5vw;
 }
 
