@@ -8,6 +8,13 @@ export class DOM {
   getComponent = (componentName) => {
     const component = document.querySelector(`[data-component=${componentName}]`);
 
+    // Component Prototype Methods
+    if (component) {
+      component.getName = function () {
+        return this.dataset.component;
+      };
+    }
+
     /** @return {Array} */
     const childrenArray = () => {
       if (!component) return [];
@@ -32,7 +39,7 @@ export class DOM {
        * @param {Function} callback
        * @returns {Function}
        */
-      const listenFor = (keys = [], callback) => {
+      component.listenFor = function (keys = [], callback) {
         if (!keys[0] || !callback) return;
         const checkKeysAndCall = (event) => {
           if (keys.includes(event.key)) {
@@ -41,11 +48,20 @@ export class DOM {
             logger(`No Handler for ${event.key}`).warn();
           }
         };
-        component.addEventListener("keydown", checkKeysAndCall);
-        const remove = () => component.removeEventListener("keydown", checkKeysAndCall);
+        this.addEventListener("keydown", checkKeysAndCall);
+        const remove = () => this.removeEventListener("keydown", checkKeysAndCall);
+
+        /**
+         * Returns keys that are being listened for
+         * @returns {Array}
+         */
+        component.keyListeners = function () {
+          return keys;
+        };
+
         return remove;
       };
-      return { listenFor };
+      return component;
     };
     return { component, childrenArray, focus, focusOnFirstChild };
   };
