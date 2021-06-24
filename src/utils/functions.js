@@ -63,3 +63,11 @@ export const sortSearch = (movies = [], query = "") => {
     .map((movie) => movie[0]);
   return filteredResults;
 };
+
+export const convertBooleanString = (booleanString) => {
+  if (booleanString === "true") {
+    return true;
+  } else {
+    return false;
+  }
+};
