@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { of } from "rxjs";
 import { take, map } from "rxjs/operators";
+import "./Elements";
 import App from "./App";
 import {
   bootstrapPerformanceMonitor,
