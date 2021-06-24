@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Subject } from "rxjs";
-import { isEmpty, prop } from "ramda";
 import { KeyRow } from "./KeyRow";
 import { keys } from "./Keys";
-import { FocusManager, keyHandler, logger } from "../../utils";
+import { FocusManager } from "../../utils";
 import { TYPES } from "../../Types";
 import { onChange$ } from "../Input";
+import { actionHandler, noTargetFunc } from "./keyboardFunctions";
 import styles from "./Keyboard.module.css";
 
 export const keyHandler$ = new Subject();
@@ -15,54 +15,26 @@ export function Keyboard({ noTarget = {}, handleInput, autofillSuggestions }) {
 
   useEffect(() => {
     const focusManager = new FocusManager();
-    const keyboard = focusManager.getComponent("keyboard").component;
-    if (!keyboard.contains(document.activeElement)) {
-      focusManager.getAllFocusableElements(keyboard).focusOnFirst();
-    }
+    focusManager.focusOnKeyboard();
 
     const keyHandlerSubscription = keyHandler$.subscribe(({ event, action, key }) => {
-      if (event.key === TYPES.ENTER_KEY) {
-        switch (action) {
-          case TYPES.SHIFT_ACTION:
-            setIsUppercase((prevState) => !prevState);
-            break;
-          case TYPES.ENTER_ACTION:
-            noTargetFunc(event);
-            break;
-
-          default:
-            handleInput(key, action);
-            break;
-        }
-      } else if (event.key === TYPES.BACKSPACE_KEY) {
-        noTargetFunc(event);
-      } else {
-        const focusManager = new FocusManager(event);
-        focusManager.handleKeyboardFocusDirection();
-      }
+      actionHandler({ event, action, key, setIsUppercase, handleInput, noTarget });
     });
 
     const onChangeSubscription = onChange$.subscribe((value) => {});
 
-    document.addEventListener("keyboard-no-nav-target", noTargetFunc);
+    document.addEventListener("keyboard-no-nav-target", (event) =>
+      noTargetFunc(event, noTarget)
+    );
 
     return () => {
       keyHandlerSubscription.unsubscribe();
       onChangeSubscription.unsubscribe();
-      document.removeEventListener("keyboard-no-nav-target", noTargetFunc);
+      document.removeEventListener("keyboard-no-nav-target", (event) =>
+        noTargetFunc(event, noTarget)
+      );
     };
   }, [autofillSuggestions]);
-
-  const noTargetFunc = (event) => {
-    const syntheticEvent = prop("detail", event);
-    const eventData = syntheticEvent || { key: event.key };
-
-    if (isEmpty(noTarget)) {
-      logger("No target").warn();
-    } else {
-      keyHandler(eventData, noTarget);
-    }
-  };
 
   const renderKeyRows = () => {
     const renderAutoFillSuggestions = () => {
