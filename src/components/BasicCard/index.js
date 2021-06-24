@@ -13,18 +13,23 @@ export class BasicCard extends Card {
     const { title, posterUrl, id } = this.props;
     const { shouldMount } = this.state;
     return (
-      <img
-        data-id={id}
-        data-height={this.height}
-        data-width={this.width}
-        loading="lazy"
-        {...this.focusManagerProps}
-        className={styles["basic-card"]}
+      <focus-container
+        id={id}
+        height={this.height}
+        component="card"
+        width={this.width}
+        className={styles["basic-card-container"]}
         aria-label={title}
-        alt=""
-        src={shouldMount ? posterUrl : ""}
         ref={this.ref}
-      ></img>
+        {...this.focusManagerProps}
+      >
+        <img
+          className={styles["basic-card"]}
+          alt=""
+          src={shouldMount ? posterUrl : ""}
+          loading="lazy"
+        ></img>
+      </focus-container>
     );
   };
 
