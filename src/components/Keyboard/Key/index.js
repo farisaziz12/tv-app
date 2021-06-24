@@ -8,13 +8,8 @@ export function Key({ lowercase, uppercase, action, isUppercase }) {
     keyHandler$.next({ event, action, key });
   };
   return (
-    <div
-      onKeyDown={handleKeyDown}
-      tabIndex="-1"
-      data-component="key"
-      className={styles.key}
-    >
+    <focus-container onKeyDown={handleKeyDown} component="key" className={styles.key}>
       {key}
-    </div>
+    </focus-container>
   );
 }
