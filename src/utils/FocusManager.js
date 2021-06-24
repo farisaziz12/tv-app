@@ -40,6 +40,15 @@ export class FocusManager extends DOM {
     }
   };
 
+  focusOnKeyboard = () => {
+    const keyboard = this.getComponent("keyboard").component;
+    if (!keyboard) return;
+
+    if (!keyboard.contains(document.activeElement)) {
+      this.getAllFocusableElements(keyboard).focusOnFirst();
+    }
+  };
+
   /**
    *  returns function (handler) that matches key
    * @param {String} key
