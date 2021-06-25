@@ -1,0 +1,39 @@
+.key {
+  display: -webkit-box;
+  text-align: center;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+
+  height: 3.25vw;
+  line-height: 3.25vw;
+  width: 100%;
+
+  max-width: 35vw;
+
+  color: #ffffff;
+  font-size: 2.5vw;
+
+  border: solid 0.2vw rgba(255, 255, 255, 0.602);
+  border-radius: 0.75vw;
+  margin: 0.2vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  transition: 0.1s ease-in-out;
+}
+
+.key:focus {
+  font-weight: bold;
+  color: #000000;
+  background-color: #ffffff;
+  border: solid 0.2vw #000000;
+  transform: scale(1.05);
+  outline: none;
+}
+
+.key:first-child {
+  margin-left: 0.5vw;
+}
+.key:last-child {
+  margin-right: 0.5vw;
+}

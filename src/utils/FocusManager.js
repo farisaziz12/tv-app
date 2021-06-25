@@ -1,7 +1,11 @@
 import { prop, propOr } from "ramda";
 import { logger } from "./logger";
 import { DOM } from "./DOM";
-import { dispatchCardMountEvent, dispatchNoTargetEvent } from "../Events";
+import {
+  dispatchCardMountEvent,
+  dispatchNoTargetEvent,
+  dispatchKeyboardNoTargetEvent,
+} from "../Events";
 import { TYPES } from "../Types";
 
 let lastCard;
@@ -9,8 +13,10 @@ export class FocusManager extends DOM {
   constructor(event) {
     super();
     this.event = event;
-    this.isLeftKey = event?.key === TYPES.ARROWLEFT;
-    this.isRightKey = event?.key === TYPES.ARROWRIGHT;
+    this.isLeftKey = event?.key === TYPES.ARROW_LEFT;
+    this.isRightKey = event?.key === TYPES.ARROW_RIGHT;
+    this.isUpKey = event?.key === TYPES.ARROW_UP;
+    this.isDownKey = event?.key === TYPES.ARROW_DOWN;
     this.containerGrids = this.getComponent("grids-container").childrenArray();
     this.currentGrid = this.getParent(prop("target", event), "grid");
     this.currentGridCards = this.getChildrenArray(this.currentGrid, "card");
@@ -25,10 +31,22 @@ export class FocusManager extends DOM {
   }
 
   initialGridFocus = () => {
-    if (!this.containerGrids[0]) return;
+    if (!this.containerGrids[0]) return false;
     const firstCard = prop(0, this.getChildrenArray(this.containerGrids[0]));
 
-    if (firstCard) firstCard.focus();
+    if (firstCard) {
+      firstCard.focus();
+      return true;
+    }
+  };
+
+  focusOnKeyboard = () => {
+    const keyboard = this.getComponent("keyboard").component;
+    if (!keyboard) return;
+
+    if (!keyboard.contains(document.activeElement)) {
+      this.getAllFocusableElements(keyboard).focusOnFirst();
+    }
   };
 
   /**
@@ -58,6 +76,43 @@ export class FocusManager extends DOM {
     const focusDirectionHandler = this.getDirectionHandler(key, handlers);
 
     if (focusDirectionHandler) focusDirectionHandler();
+  };
+
+  handleKeyboardFocusDirection = () => {
+    const {
+      element: key,
+      index: keyIndex,
+      parentElements: keyRowKeys,
+      parentElement: keyRow,
+    } = this.getElementProps(this.event.target);
+
+    const { childrenArray: keyboardRows } = this.getComponent("keyboard");
+
+    const currentRowIndex = keyboardRows().indexOf(keyRow);
+
+    if (this.isRightKey || this.isLeftKey) {
+      const nextKey = keyRowKeys[this.isRightKey ? keyIndex + 1 : keyIndex - 1];
+      if (nextKey) {
+        nextKey.focus();
+      } else {
+        dispatchKeyboardNoTargetEvent(this.event.key);
+      }
+    } else if (this.isUpKey || this.isDownKey) {
+      const nextKeyRow =
+        keyboardRows()[this.isDownKey ? currentRowIndex + 1 : currentRowIndex - 1];
+      const nextRowKeys = this.getChildrenArray(nextKeyRow);
+
+      if (nextRowKeys) {
+        const currentKey = nextRowKeys[keyIndex] || nextRowKeys[nextRowKeys.length - 1];
+        const nextKey =
+          this.getClosestElementYAxis(key, currentKey, nextKeyRow, 200) ||
+          this.findNextFocusableElement(nextRowKeys, keyIndex); // fallback
+
+        if (nextKey) nextKey.focus();
+      } else {
+        dispatchKeyboardNoTargetEvent(this.event.key);
+      }
+    }
   };
 
   handleFocusLastElement = () => {
@@ -136,13 +191,16 @@ export class FocusManager extends DOM {
       const closestFocusableCard = this.getClosestElementYAxis(
         this.event.target,
         nextFocusableCard,
-        nextGrid
+        nextGrid,
+        350
       );
 
       const scrollGrid = (element) => {
+        const hero = this.getComponent("hero").component;
+        if (!hero) return;
         if (
           !this.isInViewport(element) ||
-          this.isTouchingElement(this.event.target, this.getComponent("hero").component)
+          this.isTouchingElement(this.event.target, hero)
         ) {
           this.handleVerticalScroll(isUp, element);
         }
@@ -152,7 +210,10 @@ export class FocusManager extends DOM {
         scrollGrid(closestFocusableCard);
         closestFocusableCard.focus();
       } else {
-        const element = this.findNextFocusableCard(nextGridCards);
+        const element = this.findNextFocusableElement(
+          nextGridCards,
+          this.currentCardPosition
+        );
         if (!element) return;
         scrollGrid(element);
       }
@@ -206,14 +267,13 @@ export class FocusManager extends DOM {
    * @param {Array} nextGridCards
    * @returns {HTMLElement}
    */
-  findNextFocusableCard = (nextGridCards) => {
-    const { currentCardPosition } = this;
-    /* traverse the array of cards in reverse starting from current card position
-     * order to find the first focusable card
+  findNextFocusableElement = (nextArrayOfElement, currentIndex) => {
+    /* traverse the array of cards in reverse starting from current index
+     * order to find the first focusable element
      */
-    if (!currentCardPosition) return;
-    for (let index = currentCardPosition; index !== 0; index -= 1) {
-      const element = nextGridCards[index];
+    if (!currentIndex) return;
+    for (let index = currentIndex; index !== 0; index -= 1) {
+      const element = nextArrayOfElement[index];
 
       if (element && this.isInRightViewport(element)) {
         element.focus();

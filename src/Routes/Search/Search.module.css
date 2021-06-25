@@ -1,0 +1,35 @@
+.search-input {
+  position: fixed;
+  display: flex;
+  height: 4vw;
+  width: 60vw;
+
+  background-color: transparent;
+  color: #ffffff;
+
+  border: 0.25vw solid #ffffff;
+  border-radius: 0.5vw;
+  margin: 1vw 0 0 7vw;
+
+  font-size: 2vw;
+  padding-left: 0.75vw;
+
+  outline: none;
+}
+
+.search-input::placeholder {
+  display: flex;
+
+  margin-left: 1vw;
+}
+
+.no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100vw;
+  height: 100vh;
+  font-size: 4vw;
+  color: #ffffff;
+}

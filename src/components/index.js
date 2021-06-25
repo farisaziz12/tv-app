@@ -6,3 +6,5 @@ export { Hero } from "./Hero";
 export { Loader } from "./Loader";
 export { Sidebar } from "./Sidebar";
 export { VideoPlayer } from "./VideoPlayer";
+export { Keyboard } from "./Keyboard";
+export { Input } from "./Input";
