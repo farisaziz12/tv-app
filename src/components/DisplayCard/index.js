@@ -24,17 +24,18 @@ export class DisplayCard extends Card {
   };
 
   render() {
-    const { title, backdropUrl, id } = this.props;
+    const { backdropUrl, id } = this.props;
     const { shouldMount } = this.state;
     return (
-      <div
+      <focus-container
         className={styles["display-card-container"]}
-        data-id={id}
-        data-height={this.height}
-        data-width={this.width}
-        {...this.focusManagerProps}
-        aria-label={title}
+        id={id}
+        height={this.height}
+        width={this.width}
+        component="card"
+        auto-aria-label
         ref={this.ref}
+        {...this.focusManagerProps}
       >
         <div
           style={{ backgroundImage: `url(${shouldMount ? backdropUrl : ""})` }}
@@ -42,7 +43,7 @@ export class DisplayCard extends Card {
         ></div>
         {this.renderTitle()}
         {this.renderGenre()}
-      </div>
+      </focus-container>
     );
   }
 }

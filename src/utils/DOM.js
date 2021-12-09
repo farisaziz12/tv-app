@@ -8,13 +8,6 @@ export class DOM {
   getComponent = (componentName) => {
     const component = document.querySelector(`[data-component=${componentName}]`);
 
-    // Component Prototype Methods
-    if (component) {
-      component.getName = function () {
-        return this.dataset.component;
-      };
-    }
-
     /** @return {Array} */
     const childrenArray = () => {
       if (!component) return [];
@@ -103,7 +96,6 @@ export class DOM {
    */
   getElementPosition = (elementsArray, element) => {
     if (!elementsArray) return;
-
     const position = elementsArray.indexOf(element);
     return position;
   };

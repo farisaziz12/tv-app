@@ -13,8 +13,6 @@ export class Card extends Component {
     this.width = 0; //vw
 
     this.focusManagerProps = {
-      "data-component": "card",
-      tabIndex: "-1",
       onKeyDown: this.handleFocus,
       onFocus: this.handleHero,
     };
@@ -61,7 +59,7 @@ export class Card extends Component {
 
   handleFocus = (event) => {
     if (event.key === "Enter") {
-      const id = path(["target", "dataset", "id"], event);
+      const id = path(["target", "id"], event);
       dispatchShowPageEvent(id);
     } else {
       focusHandler$.next(event);

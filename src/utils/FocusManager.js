@@ -74,7 +74,6 @@ export class FocusManager extends DOM {
     };
 
     const focusDirectionHandler = this.getDirectionHandler(key, handlers);
-
     if (focusDirectionHandler) focusDirectionHandler();
   };
 
@@ -227,16 +226,15 @@ export class FocusManager extends DOM {
    * @param {Boolean} shouldMoveLeft
    */
   handleHorizontalScroll = (shouldMoveLeft) => {
-    const { width } = this.event.target.dataset;
+    const { width } = this.event.target;
     const { marginLeft } = this.currentGrid.style;
     const currentMargin = marginLeft
       ? parseFloat(propOr(0, 0, marginLeft.match(/-\d.+/g))) // get margin as integer without size units
       : 0;
-    const cardWidth = parseFloat(width);
 
     this.currentGrid.style.marginLeft = shouldMoveLeft
-      ? `${currentMargin + cardWidth}vw`
-      : `${currentMargin - cardWidth}vw`;
+      ? `${currentMargin + width}vw`
+      : `${currentMargin - width}vw`;
   };
 
   /**
@@ -244,20 +242,16 @@ export class FocusManager extends DOM {
    * @param {Boolean} shouldMoveUp
    */
   handleVerticalScroll = (shouldMoveUp, nextElement) => {
-    const height = shouldMoveUp
-      ? nextElement.dataset.height
-      : this.event.target.dataset.height;
+    const height = shouldMoveUp ? nextElement.height : this.event.target.height;
     const gridsContainer = this.getComponent("grids-container").component;
     const { transform } = gridsContainer.style;
     const currentTranslate = transform
       ? parseFloat(propOr(0, 0, transform.match(/-\d.+/g))) // get translation distance as integer without units
       : 0;
 
-    const cardHeight = parseFloat(height);
-
     gridsContainer.style.transform = shouldMoveUp
-      ? `translateY(${currentTranslate + cardHeight}vw)`
-      : `translateY(${currentTranslate - cardHeight}vw)`;
+      ? `translateY(${currentTranslate + height}vw)`
+      : `translateY(${currentTranslate - height}vw)`;
 
     logger(`Moved by ${height}vw`).log();
   };

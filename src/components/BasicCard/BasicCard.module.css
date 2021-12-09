@@ -2,6 +2,17 @@
   position: relative;
   height: 16.020833333333vw;
   width: 10.375vw;
+  border-radius: 1vw;
+  object-fit: cover;
+}
+
+.basic-card-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 16.020833333333vw;
+  width: 10.375vw;
   margin-left: 0.520833vw;
   border-radius: 1vw;
   object-fit: cover;
@@ -9,7 +20,7 @@
   transition: 0.1s ease;
 }
 
-.basic-card:focus {
+.basic-card-container:focus {
   border: 0.25vw solid rgb(238, 224, 224);
   transform: scale(1.1);
   outline: none;
